@@ -4,11 +4,11 @@
 
 
 AIS::AIS(const char *AISmsg)
-: next(0), sentences(0),sentenceNmb(0), msgId(0),channel(0), msgLen(0)
+: next(0), sentences(0),sentenceNmb(0),
+  msgId(0),channel(0), msgLen(0)
 {
 	if (strncmp(AISmsg, "!AIVDM,", 7)) {
 		// This is not an AIVDM message - better bail out
-		Serial.println("AIS(): Not an AIVDM message");
 		msg[0] = '\0';
 		return;
 	}
@@ -23,7 +23,6 @@ AIS::AIS(const char *AISmsg)
 			if (i >= msg_max) {
 				// Bail out - message too long
 				msg[0] = '\0';
-				Serial.println("AIS(): message too long");
 				return;
 			}
 		}
@@ -34,7 +33,6 @@ AIS::AIS(const char *AISmsg)
 		if ((next - tmp) != 1) {
 			// Expect message never to consist of more than 9 messages
 			msg[0] = '\0';
-			Serial.println("AIS(): sentence count more than one digit");
 			return;
 		}
 		sentences = *tmp - '0';
@@ -42,7 +40,6 @@ AIS::AIS(const char *AISmsg)
 		if (sentences != 1) {
 			sentences = 0;
 			msg[0] = '\0';
-			Serial.println("AIS(): Multi sentence message not supported yet");
 			return;
 		}
 
@@ -71,13 +68,14 @@ AIS::AIS(const char *AISmsg)
 			tmp++;
 		}
 		msg[i] = *tmp; // Terminate msg
-		Serial.print("msg[] : ");
-		Serial.println((char*)msg);
 
 		// Time to decode the AIS data
 		decode();
 	}
 }
+
+
+
 
 /*
  * Return current parameter terminated by '\0'.
@@ -97,8 +95,6 @@ uint8_t* AIS::nextParam()
 		next++;
 	}
 	*next = '\0';
-	Serial.print("Length of param: ");
-	Serial.println(next - first);
 	return first;
 }
 
@@ -119,14 +115,11 @@ void AIS::decode()
 	int cnt=0;
 	uint8_t src;
 
-	Serial.println("Decoding: ");
 	while (msg[srcIdx] != '\0') {
 		src = msg[srcIdx] - '0';
 		if (src > 40) {
 			src -= 8;
 		}
-		Serial.print(src,16);
-		Serial.print(" ");
 		switch (cnt) {
 		case 0:
 			msg[dstIdx] = (src << 2);
@@ -153,67 +146,43 @@ void AIS::decode()
 		}
 	}
 	msgLen = srcIdx*6;
-	Serial.println("");
-	Serial.print("Decoded string: ");
-	for (int i=0; i < msgLen/8; i++) {
-		Serial.print(msg[i],16);
-		Serial.print(" ");
-	}
-	Serial.print("\ndecode(): decoded len ");
-	Serial.print(msgLen);
-	Serial.println(" bits");
+}
+
+int AIS::getbit(unsigned int idx)
+{
+	int byteIdx = idx / 8;
+	int bitIdx = 7 - (idx % 8);
+
+	return ((msg[byteIdx] >> bitIdx) & 0x01);
 }
 
 /*
  * getdata return in data cnt bits from decoded AIS data, starting from begin
  * If not enough data function returns false, otherwise true
  */
-bool AIS::getdata(int begin, int cnt, uint8_t *data)
+bool AIS::getdata(unsigned int begin, unsigned int cnt, uint8_t *data)
 {
 	if (begin+cnt > msgLen)
 		return false;
 
-	int outIdx = cnt / 8;          // We start from LSB
-	int endIdx = (begin+cnt) / 8;
-	int endShift = (begin+cnt) % 8;
-	int startIdx = begin /8;
-	int startBits = begin % 8;
+	unsigned int srcIdx = begin;
+	unsigned int dstIdx = 0;
+	unsigned int dstBitIdx = cnt % 8;
 
-	Serial.print("endIdx:    "); Serial.println(endIdx);
-	Serial.print("startIdx:  "); Serial.println(startIdx);
-	Serial.print("endShift:  "); Serial.println(endShift);
-	Serial.print("startBits: "); Serial.println(startBits);
-	Serial.print("outIdx:    "); Serial.println(outIdx);
+	if (dstBitIdx == 0)
+		dstBitIdx = 8;
 
-	if (endIdx == startIdx) {
-		if (endShift) {
-			data[outIdx] = (msg[endIdx] >> (8 - endShift));
-		} else {
-			data[outIdx] = msg[endIdx];
+	data[dstIdx] = 0;
+	while (srcIdx < begin + cnt) {
+		dstBitIdx--;
+		data[dstIdx] |= (getbit(srcIdx) << dstBitIdx);
+		srcIdx++;
+		if (0 == dstBitIdx) {
+			dstBitIdx = 8;
+			dstIdx++;
+			data[dstIdx] = 0;
 		}
 	}
-	while (endIdx > startIdx) {
-		if (endShift) {
-			Serial.print("q1) msg[");Serial.print(endIdx);Serial.print("] = ");Serial.println(msg[endIdx],16);
-			data[outIdx] = (msg[endIdx] >> (8-endShift));
-			Serial.print("a1) data["); Serial.print(outIdx); Serial.print("] = "); Serial.println(data[outIdx],16);
-			endIdx--;
-			Serial.print("q2) msg[");Serial.print(endIdx);Serial.print("] = ");Serial.println(msg[endIdx],16);
-			data[outIdx] |= (msg[endIdx] << endShift);
-			Serial.print("a2) data["); Serial.print(outIdx); Serial.print("] = "); Serial.println(data[outIdx],16);
-		} else {
-			Serial.print("w) msg[");Serial.print(endIdx);Serial.print("] = ");Serial.println(msg[endIdx],16);
-			data[outIdx] = msg[endIdx];
-			endIdx--;
-			Serial.print("b) data["); Serial.print(outIdx); Serial.print("] = "); Serial.println(data[outIdx],16);
-		}
-		outIdx--;
-		cnt -= 8;
-	}
-	if (startBits) {
-		data[outIdx] &= ((1 << (8 - startBits)) - 1);
-		cnt += (8-startBits); // Ought now be 0
-		Serial.print("c) data["); Serial.print(outIdx); Serial.print("] = "); Serial.println(data[outIdx],16);
-	}
+
 	return true;
 }

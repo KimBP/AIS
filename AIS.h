@@ -9,20 +9,36 @@ class AIS
 public:
 	AIS(const char *AISmsg);
 	static const int msg_max = 100;
-	bool getdata(int begin, int cnt, uint8_t *data);
+	bool getdata(unsigned int begin, unsigned int cnt, uint8_t *data);
+	template <typename T>
+		static T fixSign(unsigned int bits, T data)
+		{
+			if (bits >= 8*sizeof(data))
+				return data;
+
+			T one = 1; // Ensure shift of 1 results in right type
+			T sign = one << (bits-1);
+			if (data > sign) {
+				for (unsigned int i= bits; i < 8*sizeof(data); i++) {
+					data |= (one << i);
+				}
+			}
+			return data;
+		}
 
 private:
 	uint8_t* nextParam();
 	void decode();
+	int getbit(unsigned int idx);
 
 private:
 	uint8_t* next;
-	int sentences;
-	int sentenceNmb;
+	unsigned int sentences;
+	unsigned int sentenceNmb;
 	char msgId;
 	char channel;
 	uint8_t msg[msg_max];
-	int msgLen;
+	unsigned int msgLen;
 };
 
 
