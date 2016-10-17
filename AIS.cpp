@@ -117,18 +117,82 @@ bool AIS::getdata(unsigned int begin, unsigned int cnt, uint8_t *data)
 	return true;
 }
 
+unsigned long AIS::get_u32(unsigned start, unsigned len)
+{
+	union {
+		uint8_t data[4];
+		unsigned long val;
+	} u;
+
+	if (start + len > msgLen) return 0;
+	getdata(start, len, u.data);
+	u.val = htonl(u.val);
+	return u.val;
+}
+
+long AIS::get_i32(unsigned start, unsigned len)
+{
+	union {
+		uint8_t data[4];
+		long val;
+	} u;
+
+	if (start + len > msgLen) return 0;
+	getdata(start, len, u.data);
+	u.val = htonl(u.val);
+	u.val = fixSign<long>(len, u.val);
+	return u.val;
+}
+
+unsigned int AIS::get_u16(unsigned start, unsigned len)
+{
+	union {
+		uint8_t data[2];
+		unsigned int val;
+	} u;
+
+	if (start + len > msgLen) return 0;
+	getdata(start, len, u.data);
+	u.val = htons(u.val);
+	return u.val;
+
+}
+
+
 #define MMSI_START 8
 #define MMSI_LEN   30
 
 unsigned long AIS::get_mmsi()
 {
-	union {
-		uint8_t data[4];
-		unsigned long mmsi;
-	} u;
+	return get_u32(MMSI_START, MMSI_LEN);
+}
 
-	if (MMSI_START + MMSI_LEN > msgLen) return 0;
-	getdata(MMSI_START, MMSI_LEN, u.data);
-	u.mmsi = htonl(u.mmsi);
-	return u.mmsi;
+#define LAT_START  89
+#define LAT_END    27
+long AIS::get_latitude()
+{
+	return get_i32(LAT_START, LAT_END);
+}
+
+#define LONG_START  61
+#define LONG_END    28
+long AIS::get_longitude()
+{
+	return get_i32(LONG_START, LONG_END);
+}
+
+#define SOG_START 50
+#define SOG_LEN   10
+
+unsigned int AIS::get_SOG()
+{
+	return get_u16(SOG_START, SOG_LEN);
+}
+
+#define COG_START 116
+#define COG_LEN   12
+
+unsigned int AIS::get_COG()
+{
+	return get_u16(COG_START, COG_LEN);
 }

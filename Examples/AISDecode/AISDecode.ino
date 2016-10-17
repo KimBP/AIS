@@ -52,52 +52,29 @@ void setup() {
   Serial.println("");
   
   // Get SOG
-  if (false == ais_msg.getdata(50, 10, data)) {
-    Serial.println("AIS getdata failed");
-    return;
-  }
   {
-    unsigned int *SOG = (unsigned int*)data;
-    *SOG = htons(*SOG);
+    unsigned int SOG = ais_msg.get_SOG();
     Serial.print("Returned SOG: ");
-    Serial.print( (*SOG) / 10 ); Serial.print("."); Serial.print( (*SOG) % 10 ); Serial.println(" nm");
+    Serial.print( (SOG) / 10 ); Serial.print("."); Serial.print( (SOG) % 10 ); Serial.println(" nm");
   }
 
   // Get COG
-  if (false == ais_msg.getdata(116, 12, data)) {
-    Serial.println("AIS getdata failed");
-    return;
-  }
   {
-    unsigned int *COG = (unsigned int*)data;
-    *COG = htons(*COG);
+    unsigned int COG = ais_msg.get_COG();
     Serial.print("Returned COG: ");
-    Serial.print( (*COG) / 10 ); Serial.print("."); Serial.print( (*COG) % 10 ); Serial.println(" degrees");
+    Serial.print( (COG) / 10 ); Serial.print("."); Serial.print( (COG) % 10 ); Serial.println(" degrees");
   }
 
   // Get Latitude
-  if (false == ais_msg.getdata(89, 27, data)) {
-    Serial.println("AIS getdata failed");
-    return;
-  }
   {
-    long *LAT = (long*)data;
-    *LAT = htonl(*LAT);
-    *LAT = AIS::fixSign<long>(27, *LAT);    
-    Serial.print("Returned LAT: "); printDegrees(*LAT); Serial.println(" degrees");
+    long LAT = ais_msg.get_latitude();
+    Serial.print("Returned LAT: "); printDegrees(LAT); Serial.println(" degrees");
   }
 
   // Get Longitude
-  if (false == ais_msg.getdata(61, 28, data)) {
-    Serial.println("AIS getdata failed");
-    return;
-  }
   {
-    long *LONG = (long*)data;
-    *LONG = htonl(*LONG);
-    *LONG = AIS::fixSign<long>(28, *LONG);    
-    //Serial.print("Raw long: "); Serial.print(*LONG); Serial.print(" ("); Serial.print(*LONG,16); Serial.println(")");
-    Serial.print("Returned LONG: "); printDegrees(*LONG); Serial.println(" degrees");
+    long LONG = ais_msg.get_longitude();
+    Serial.print("Returned LONG: "); printDegrees(LONG); Serial.println(" degrees");
   }
 
 }

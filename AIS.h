@@ -27,10 +27,17 @@ public:
 		}
 
 	unsigned long get_mmsi();
+	unsigned int get_SOG();
+	unsigned int get_COG();
+	long get_latitude();
+	long get_longitude();
 
 private:
 	void decode();
 	int getbit(unsigned int idx);
+	unsigned int get_u16(unsigned start, unsigned len);
+	unsigned long get_u32(unsigned start, unsigned len);
+	long get_i32(unsigned start, unsigned len);
 
 private:
 	uint8_t msg[msg_max];
