@@ -24,8 +24,24 @@ void printDegrees(long min4)
 void setup() {
   Serial.begin(115200);
 
-  //AIS ais_msg("!AIVDM,1,1,,A,14eG;o@034o8sd<L9i:a;WF>062D,0*7D");
-  AIS ais_msg("!AIVDM,1,1,,B,177KQJ5000G?tO`K>RA1wUbN0TKH,0*5C");
+  AIS ais_msg("14eG;o@034o8sd<L9i:a;WF>062D");
+  /* Console output (!AIVDM,1,1,,A,14eG;o@034o8sd<L9i:a;WF>062D,0*7D)
+   *  
+   * Returned MMSI: 316001245 (12D5CBDD )
+   * Returned SOG: 19.6 nm
+   * Returned COG: 235.0 degrees
+   * Returned LAT: 49.2002 degrees
+   * Returned LONG: -123.8777 degrees
+   */
+  //AIS ais_msg("177KQJ5000G?tO`K>RA1wUbN0TKH");
+  /*  Console output: (!AIVDM,1,1,,B,177KQJ5000G?tO`K>RA1wUbN0TKH,0*5C)
+   *   
+   *  Returned MMSI: 477553000 (1C76E168 )
+   *  Returned SOG: 0.0 nm
+   *  Returned COG: 51.0 degrees
+   *  Returned LAT: 47.5828 degrees
+   *  Returned LONG: -122.3458 degrees
+   */
   uint8_t data[4];
 
   // Get MMSI

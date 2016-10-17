@@ -7,7 +7,7 @@ class AIS
 {
 
 public:
-	AIS(const char *AISmsg);
+	AIS(const char *AISbitstream);
 	static const int msg_max = 100;
 	bool getdata(unsigned int begin, unsigned int cnt, uint8_t *data);
 	template <typename T>
@@ -27,16 +27,10 @@ public:
 		}
 
 private:
-	uint8_t* nextParam();
 	void decode();
 	int getbit(unsigned int idx);
 
 private:
-	uint8_t* next;
-	unsigned int sentences;
-	unsigned int sentenceNmb;
-	char msgId;
-	char channel;
 	uint8_t msg[msg_max];
 	unsigned int msgLen;
 };

@@ -3,100 +3,24 @@
 #include <AIS.h>
 
 
-AIS::AIS(const char *AISmsg)
-: next(0), sentences(0),sentenceNmb(0),
-  msgId(0),channel(0), msgLen(0)
+AIS::AIS(const char *AISbitstream)
+: msgLen(0)
 {
-	if (strncmp(AISmsg, "!AIVDM,", 7)) {
-		// This is not an AIVDM message - better bail out
-		msg[0] = '\0';
-		return;
+	uint8_t* tmp = (uint8_t*)AISbitstream;
+	int i = 0;
+	while (*tmp != '\0') {
+		msg[i] = *tmp;
+		i++;
+		tmp++;
 	}
+	msg[i] = *tmp; // Terminate msg
 
-	{ // Copy message into own memory
-		int i = 0;
-		AISmsg += 7; // Skip first parameter (message type)
-		while (*AISmsg != '\0' && *AISmsg != '\n') {
-			msg[i] = *(uint8_t*)AISmsg;
-			i++;
-			AISmsg++;
-			if (i >= msg_max) {
-				// Bail out - message too long
-				msg[0] = '\0';
-				return;
-			}
-		}
-	}
-	{ // Find sentences
-		uint8_t* tmp = nextParam();
-
-		if ((next - tmp) != 1) {
-			// Expect message never to consist of more than 9 messages
-			msg[0] = '\0';
-			return;
-		}
-		sentences = *tmp - '0';
-		// Can't really handle multi sentence messages for now
-		if (sentences != 1) {
-			sentences = 0;
-			msg[0] = '\0';
-			return;
-		}
-
-	}
-
-	{ // Find sentence number
-		uint8_t* tmp = nextParam(); // Don't care for now
-	}
-
-	{ // Find msgId
-		uint8_t* tmp = nextParam(); // Don't care for now
-	}
-
-	{
-		// Find channel
-		uint8_t* tmp = nextParam(); // Don't care for now
-	}
-
-	{ // This is tricky - we basically move the encoded message into the string we are reading
-	  // from  - but it is OK.
-		uint8_t* tmp = nextParam();
-		int i = 0;
-		while (*tmp != '\0') {
-			msg[i] = *tmp;
-			i++;
-			tmp++;
-		}
-		msg[i] = *tmp; // Terminate msg
-
-		// Time to decode the AIS data
-		decode();
-	}
+	// Time to decode the AIS data
+	decode();
 }
 
 
 
-
-/*
- * Return current parameter terminated by '\0'.
- * Prepare next to find next
- */
-uint8_t* AIS::nextParam()
-{
-	uint8_t *first;
-	if (next==0) {
-		next = msg;
-		first = msg;
-	} else {
-		next++;
-		first = next;
-	}
-	while (*next != ',' && *next != '\n' && *next != '\0') {
-		next++;
-	}
-	*next = '\0';
-	return first;
-}
 
 /*
  * Decode msg into it self. 4 bytes becomes 3, i.e. it is OK to do it
