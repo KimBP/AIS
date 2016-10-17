@@ -2,6 +2,12 @@
 
 #include <AIS.h>
 
+/* Copied from util.h */
+#define htonl(x) ( ((x)<<24 & 0xFF000000UL) | \
+                   ((x)<< 8 & 0x00FF0000UL) | \
+                   ((x)>> 8 & 0x0000FF00UL) | \
+                   ((x)>>24 & 0x000000FFUL) )
+#define htons(x) ( ((x)<<8) | (((x)>>8)&0xFF) )
 
 AIS::AIS(const char *AISbitstream)
 : msgLen(0)
@@ -109,4 +115,20 @@ bool AIS::getdata(unsigned int begin, unsigned int cnt, uint8_t *data)
 	}
 
 	return true;
+}
+
+#define MMSI_START 8
+#define MMSI_LEN   30
+
+unsigned long AIS::get_mmsi()
+{
+	union {
+		uint8_t data[4];
+		unsigned long mmsi;
+	} u;
+
+	if (MMSI_START + MMSI_LEN > msgLen) return 0;
+	getdata(MMSI_START, MMSI_LEN, u.data);
+	u.mmsi = htonl(u.mmsi);
+	return u.mmsi;
 }

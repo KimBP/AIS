@@ -45,24 +45,12 @@ void setup() {
   uint8_t data[4];
 
   // Get MMSI
-  if (false == ais_msg.getdata(8, 30, data)) {
-    Serial.println("AIS getdata failed");
-    return;
-  }
-  Serial.print("AIS data: ");
-  Serial.print(data[0], 16); Serial.print("-");
-  Serial.print(data[1], 16); Serial.print("-");
-  Serial.print(data[2], 16); Serial.print("-");
-  Serial.print(data[3], 16);
-  Serial.println();
-
-  unsigned long* mmsi = (unsigned long*)data;
-  *mmsi = htonl(*mmsi);
+  unsigned long mmsi = ais_msg.get_mmsi();
   Serial.print("Returned MMSI: ");
-  Serial.print(*mmsi);
-  Serial.print(" ("); Serial.print(*mmsi, 16); Serial.print(" )");
+  Serial.print(mmsi);
+  Serial.print(" ("); Serial.print(mmsi, 16); Serial.print(" )");
   Serial.println("");
-
+  
   // Get SOG
   if (false == ais_msg.getdata(50, 10, data)) {
     Serial.println("AIS getdata failed");

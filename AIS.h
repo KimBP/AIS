@@ -26,6 +26,8 @@ public:
 			return data;
 		}
 
+	unsigned long get_mmsi();
+
 private:
 	void decode();
 	int getbit(unsigned int idx);
