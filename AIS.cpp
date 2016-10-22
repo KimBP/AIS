@@ -9,7 +9,7 @@
                    ((x)>>24 & 0x000000FFUL) )
 #define htons(x) ( ((x)<<8) | (((x)>>8)&0xFF) )
 
-AIS::AIS(const char *AISbitstream)
+AIS::AIS(const char *AISbitstream, unsigned int fillBits)
 : msgLen(0)
 {
 	uint8_t* tmp = (uint8_t*)AISbitstream;
@@ -22,7 +22,9 @@ AIS::AIS(const char *AISbitstream)
 	msg[i] = *tmp; // Terminate msg
 
 	// Time to decode the AIS data
-	decode();
+	decode(fillBits);
+
+	getdata(0,6, &msgType);  // Will be used a lot
 }
 
 
@@ -38,7 +40,7 @@ AIS::AIS(const char *AISbitstream)
  *
  * becomes | qq qq qq yy | yy yy zz zz | zz ww ww ww |
  */
-void AIS::decode()
+void AIS::decode(unsigned int fillBits)
 {
 	int srcIdx=0;
 	int dstIdx=0;
@@ -75,7 +77,7 @@ void AIS::decode()
 			cnt = 0;
 		}
 	}
-	msgLen = srcIdx*6;
+	msgLen = srcIdx*6 - fillBits;
 }
 
 int AIS::getbit(unsigned int idx)
@@ -158,41 +160,241 @@ unsigned int AIS::get_u16(unsigned start, unsigned len)
 
 }
 
+uint8_t AIS::get_u8(unsigned start, unsigned len)
+{
+	uint8_t val;
 
-#define MMSI_START 8
-#define MMSI_LEN   30
+	if (start + len > msgLen) return 0;
+	getdata(start,len, &val);
+	return val;
+}
+
+int8_t AIS::get_i8(unsigned start, unsigned len)
+{
+	union {
+		uint8_t data[1];
+		int8_t val;
+	} u;
+
+	if (start + len > msgLen) return 0;
+	getdata(start,len, u.data);
+	return u.val;
+}
+
+int8_t AIS::get_rot()
+{
+	unsigned int start, len;
+	switch (msgType) {
+	case 1:
+	case 2:
+	case 3:
+		start = 42;
+		len = 8;
+		break;
+	default:
+		return 0;
+	}
+	return get_i8(start,len);
+}
+
+uint8_t AIS::get_repeat()
+{
+	return get_u8(6,2);
+
+}
+
+uint8_t AIS::get_navStatus()
+{
+	unsigned int start, len;
+	switch (msgType) {
+	case 1:
+	case 2:
+	case 3:
+		start = 38;
+		len = 4;
+		break;
+	default:
+		return 15; // Not defined
+	}
+	return get_u8(start,len);
+}
+
+uint8_t AIS::get_posAccuracy()
+{
+	unsigned int start;
+	unsigned int len=1;
+
+	switch (msgType) {
+	case 1:
+	case 2:
+	case 3:
+		start = 60;
+		break;
+	case 18:
+		start = 56;
+		break;
+	default:
+		return 0; // Not defined
+	}
+	return get_u8(start,len);
+}
+
+uint8_t AIS::get_type()
+{
+	return msgType;
+}
+
 
 unsigned long AIS::get_mmsi()
 {
-	return get_u32(MMSI_START, MMSI_LEN);
+	return get_u32(8,30);
 }
 
-#define LAT_START  89
-#define LAT_END    27
 long AIS::get_latitude()
 {
-	return get_i32(LAT_START, LAT_END);
+	unsigned int start;
+	unsigned int len  = 27;
+	switch (msgType) {
+	case 1:
+	case 2:
+	case 3:
+		start=89;
+		break;
+	case 18:
+		start=85;
+		break;
+	default:
+		return 0;
+	}
+	return get_i32(start,len);
 }
 
-#define LONG_START  61
-#define LONG_END    28
 long AIS::get_longitude()
 {
-	return get_i32(LONG_START, LONG_END);
+	unsigned int start;
+	unsigned int len = 28;
+	switch(msgType) {
+	case 1:
+	case 2:
+	case 3:
+		start = 61;
+		break;
+	case 18:
+		start = 57;
+		break;
+	default:
+		return 0;
+	}
+	return get_i32(start,len);
 }
-
-#define SOG_START 50
-#define SOG_LEN   10
 
 unsigned int AIS::get_SOG()
 {
-	return get_u16(SOG_START, SOG_LEN);
+	unsigned int start;
+	unsigned int len = 10;
+	switch(msgType) {
+	case 1:
+	case 2:
+	case 3:
+		start = 50;
+		break;
+	case 18:
+		start = 46;
+		break;
+	default:
+		return 0;
+	}
+	return get_u16(start, len);
 }
-
-#define COG_START 116
-#define COG_LEN   12
 
 unsigned int AIS::get_COG()
 {
-	return get_u16(COG_START, COG_LEN);
+	unsigned int start;
+	unsigned int len = 12;
+	switch (msgType) {
+	case 1:
+	case 2:
+	case 3:
+		start = 116;
+		break;
+	case 18:
+		start = 112;
+		break;
+	default:
+		return 0;
+	}
+	return get_u16(start, len);
+}
+
+unsigned int AIS::get_HDG()
+{
+	unsigned int start;
+	unsigned int len=9;
+	switch(msgType) {
+	case 1:
+	case 2:
+	case 3:
+		start = 128;
+		break;
+	case 18:
+		start = 124;
+		break;
+	default:
+		return 511;
+	}
+	return get_u16(start,len);
+}
+
+uint8_t AIS::get_timeStamp()
+{
+	unsigned int start;
+	unsigned int len=6;
+	switch(msgType) {
+	case 1:
+	case 2:
+	case 3:
+		start = 137;
+		break;
+	case 18:
+		start = 133;
+		break;
+	default:
+		return 0;
+	}
+	return get_u8(start,len);
+}
+
+uint8_t AIS::get_manIndicator()
+{
+	unsigned int start,len;
+	switch(msgType) {
+	case 1:
+	case 2:
+	case 3:
+		start = 143;
+		len = 2;
+		break;
+	default:
+		return 0;
+	}
+	return get_u8(start,len);
+}
+
+uint8_t AIS::get_raim()
+{
+	unsigned int start;
+	unsigned int len = 1;
+	switch(msgType) {
+	case 1:
+	case 2:
+	case 3:
+		start = 148;
+		break;
+	case 18:
+		start = 147;
+		break;
+	default:
+		return 0;
+	}
+	return get_u8(start,len);
 }
