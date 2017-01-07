@@ -103,7 +103,7 @@ int AIS::getbit(unsigned int idx)
  * getdata return in data cnt bits from decoded AIS data, starting from begin
  * If not enough data function returns false, otherwise true
  */
-bool AIS::getdata(unsigned int begin, unsigned int cnt, uint8_t *data)
+bool AIS::getdata(unsigned int begin, unsigned int cnt, uint8_t *data, bool isSigned)
 {
 	if (begin+cnt > msgLen)
 		return false;
@@ -112,10 +112,20 @@ bool AIS::getdata(unsigned int begin, unsigned int cnt, uint8_t *data)
 	unsigned int dstIdx = 0;
 	unsigned int dstBitIdx = cnt % 8;
 
+	data[dstIdx] = 0;
+	if (isSigned) {
+		if (getbit(srcIdx) == 1) {
+			/* Pre-pend with 1's */
+			const static uint8_t signmask[8] =
+				{ 0x00, 0xFE, 0xFC, 0xF8, 0xF0, 0xE0, 0xC0, 0x80};
+
+			data[dstIdx] = signmask[dstBitIdx];
+		}
+	}
+
 	if (dstBitIdx == 0)
 		dstBitIdx = 8;
 
-	data[dstIdx] = 0;
 	while (srcIdx < begin + cnt) {
 		dstBitIdx--;
 		data[dstIdx] |= (getbit(srcIdx) << dstBitIdx);
