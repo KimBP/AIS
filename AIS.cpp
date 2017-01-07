@@ -42,16 +42,26 @@ AIS::AIS(const char *AISbitstream, unsigned int fillBits)
  */
 void AIS::decode(unsigned int fillBits)
 {
-	int srcIdx=0;
-	int dstIdx=0;
-	int cnt=0;
+	unsigned int srcIdx=0;
+
+	/* First convert to binary */
+	while (msg[srcIdx] != '\0') {
+		msg[srcIdx] -= '0';
+		if (msg[srcIdx] > 40) {
+			msg[srcIdx] -= 8;
+		}
+		srcIdx++;
+	}
+	msgLen = srcIdx; /* For now in bytes - later in bits */
+
+	/* Now compress resulting 6bits values */
+	unsigned int dstIdx=0;
+	unsigned int cnt=0;
 	uint8_t src;
 
-	while (msg[srcIdx] != '\0') {
-		src = msg[srcIdx] - '0';
-		if (src > 40) {
-			src -= 8;
-		}
+	srcIdx = 0;
+	while (srcIdx != msgLen) {
+		src = msg[srcIdx];
 		switch (cnt) {
 		case 0:
 			msg[dstIdx] = (src << 2);
@@ -77,6 +87,7 @@ void AIS::decode(unsigned int fillBits)
 			cnt = 0;
 		}
 	}
+	/* Store msgLen as bit count */
 	msgLen = srcIdx*6 - fillBits;
 }
 
