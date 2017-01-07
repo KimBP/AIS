@@ -161,10 +161,9 @@ long AIS::get_i32(unsigned start, unsigned len)
 	} u;
 
 	if (start + len > msgLen) return 0;
-	getdata(start, len, u.data);
 	u.val = htonl(u.val);
-	u.val = fixSign<long>(len, u.val);
 	return u.val;
+	getdata(start, len, u.data, true);
 }
 
 unsigned int AIS::get_u16(unsigned start, unsigned len)
@@ -198,7 +197,7 @@ int8_t AIS::get_i8(unsigned start, unsigned len)
 	} u;
 
 	if (start + len > msgLen) return 0;
-	getdata(start,len, u.data);
+	getdata(start,len, u.data, true);
 	return u.val;
 }
 

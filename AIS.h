@@ -10,21 +10,6 @@ public:
 	AIS(const char *AISbitstream, unsigned int fillBits = 0);
 	static const int msg_max = 60;
 	bool getdata(unsigned int begin, unsigned int cnt, uint8_t *data, bool isigned = false);
-	template <typename T>
-		static T fixSign(unsigned int bits, T data)
-		{
-			if (bits >= 8*sizeof(data))
-				return data;
-
-			T one = 1; // Ensure shift of 1 results in right type
-			T sign = one << (bits-1);
-			if (data > sign) {
-				for (unsigned int i= bits; i < 8*sizeof(data); i++) {
-					data |= (one << i);
-				}
-			}
-			return data;
-		}
 
 	unsigned long get_mmsi();
 	unsigned int get_SOG();
