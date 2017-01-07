@@ -144,42 +144,30 @@ bool AIS::getdata(unsigned int begin, unsigned int cnt, uint8_t *data, bool isSi
 
 unsigned long AIS::get_u32(unsigned start, unsigned len)
 {
-	union {
-		uint8_t data[4];
-		unsigned long val;
-	} u;
+	unsigned long val;
 
 	if (start + len > msgLen) return 0;
-	getdata(start, len, u.data);
-	u.val = htonl(u.val);
-	return u.val;
+	getdata(start, len, reinterpret_cast<uint8_t*>(&val));
+	return htonl(val);
 }
 
 long AIS::get_i32(unsigned start, unsigned len)
 {
-	union {
-		uint8_t data[4];
-		long val;
-	} u;
+	long val;
 
 	if (start + len > msgLen) return 0;
-	u.val = htonl(u.val);
-	return u.val;
-	getdata(start, len, u.data, true);
+
+	getdata(start, len, reinterpret_cast<uint8_t*>(&val), true);
+	return htonl(val);
 }
 
 unsigned int AIS::get_u16(unsigned start, unsigned len)
 {
-	union {
-		uint8_t data[2];
-		unsigned int val;
-	} u;
+	uint16_t val;
 
 	if (start + len > msgLen) return 0;
-	getdata(start, len, u.data);
-	u.val = htons(u.val);
-	return u.val;
-
+	getdata(start, len, reinterpret_cast<uint8_t*>(&val));
+	return htons(val);
 }
 
 uint8_t AIS::get_u8(unsigned start, unsigned len)
@@ -193,14 +181,11 @@ uint8_t AIS::get_u8(unsigned start, unsigned len)
 
 int8_t AIS::get_i8(unsigned start, unsigned len)
 {
-	union {
-		uint8_t data[1];
-		int8_t val;
-	} u;
+	int8_t val;
 
 	if (start + len > msgLen) return 0;
-	getdata(start,len, u.data, true);
-	return u.val;
+	getdata(start,len, reinterpret_cast<uint8_t*>(&val), true);
+	return val;
 }
 
 int8_t AIS::get_rot()
