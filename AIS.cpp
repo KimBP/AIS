@@ -142,7 +142,9 @@ bool AIS::getdata(unsigned int begin, unsigned int cnt, uint8_t *data, bool isSi
 	return true;
 }
 
-unsigned long AIS::get_u32(unsigned start, unsigned len)
+volatile unsigned long latest_u32;
+
+uint32_t AIS::get_u32(unsigned start, unsigned len)
 {
 	unsigned long val;
 
@@ -151,7 +153,7 @@ unsigned long AIS::get_u32(unsigned start, unsigned len)
 	return htonl(val);
 }
 
-long AIS::get_i32(unsigned start, unsigned len)
+int32_t AIS::get_i32(unsigned start, unsigned len)
 {
 	long val;
 
@@ -161,7 +163,7 @@ long AIS::get_i32(unsigned start, unsigned len)
 	return htonl(val);
 }
 
-unsigned int AIS::get_u16(unsigned start, unsigned len)
+uint16_t AIS::get_u16(unsigned start, unsigned len)
 {
 	uint16_t val;
 
@@ -257,6 +259,7 @@ unsigned long AIS::get_mmsi()
 	return get_u32(8,30);
 }
 
+/* Notice latitude is returned in minutes with 4 digits precision */
 long AIS::get_latitude()
 {
 	unsigned int start;
@@ -276,6 +279,7 @@ long AIS::get_latitude()
 	return get_i32(start,len);
 }
 
+/* Notice longitude is returned in minutes with 4 digits precision */
 long AIS::get_longitude()
 {
 	unsigned int start;
@@ -295,7 +299,7 @@ long AIS::get_longitude()
 	return get_i32(start,len);
 }
 
-unsigned int AIS::get_SOG()
+uint16_t AIS::get_SOG()
 {
 	unsigned int start;
 	unsigned int len = 10;
@@ -314,7 +318,7 @@ unsigned int AIS::get_SOG()
 	return get_u16(start, len);
 }
 
-unsigned int AIS::get_COG()
+uint16_t AIS::get_COG()
 {
 	unsigned int start;
 	unsigned int len = 12;
@@ -333,7 +337,7 @@ unsigned int AIS::get_COG()
 	return get_u16(start, len);
 }
 
-unsigned int AIS::get_HDG()
+uint16_t AIS::get_HDG()
 {
 	unsigned int start;
 	unsigned int len=9;
