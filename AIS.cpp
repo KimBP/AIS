@@ -3,11 +3,13 @@
 #include <AIS.h>
 
 /* Copied from util.h */
-#define htonl(x) ( ((x)<<24 & 0xFF000000UL) | \
-                   ((x)<< 8 & 0x00FF0000UL) | \
-                   ((x)>> 8 & 0x0000FF00UL) | \
-                   ((x)>>24 & 0x000000FFUL) )
+
+#define htonl(x) ( ( ((x)<<24) & 0xFF000000UL) | \
+                   (((x)<< 8) & 0x00FF0000UL) | \
+                   (((x)>> 8) & 0x0000FF00UL) | \
+                   (((x)>>24) & 0x000000FFUL) )
 #define htons(x) ( ((x)<<8) | (((x)>>8)&0xFF) )
+
 
 AIS::AIS(const char *AISbitstream, unsigned int fillBits)
 : msgLen(0)
