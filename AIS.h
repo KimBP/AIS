@@ -2,6 +2,12 @@
 #ifndef _AIS_H_
 #define _AIS_H_
 
+/* Information about individual AIS message types currently supported, see:
+ *
+ * http://catb.org/gpsd/AIVDM.html#_types_1_2_and_3_position_report_class_a
+ * http://catb.org/gpsd/AIVDM.html#_type_18_standard_class_b_cs_position_report'
+ */
+
 #include <Arduino.h>
 class AIS
 {
