@@ -142,8 +142,6 @@ bool AIS::getdata(unsigned int begin, unsigned int cnt, uint8_t *data, bool isSi
 	return true;
 }
 
-volatile unsigned long latest_u32;
-
 uint32_t AIS::get_u32(unsigned start, unsigned len)
 {
 	uint32_t val;
