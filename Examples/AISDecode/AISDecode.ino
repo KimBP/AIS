@@ -21,6 +21,36 @@ void printDegrees(long min4)
     Serial.print(intPart/10000L);Serial.print(".");Serial.print(frac);
 }
 
+void showMMSI(AIS& ais_msg) {
+  unsigned long mmsi = ais_msg.get_mmsi();
+  Serial.print("Returned MMSI: ");
+  Serial.print(mmsi);
+  Serial.print(" ("); Serial.print(mmsi, 16); Serial.print(" )");
+  Serial.println("");
+}
+
+void showSOG(AIS& ais_msg) {
+    unsigned int SOG = ais_msg.get_SOG();
+    Serial.print("Returned SOG: ");
+    Serial.print( (SOG) / 10 ); Serial.print("."); Serial.print( (SOG) % 10 ); Serial.println(" nm");  
+}
+
+void showCOG(AIS& ais_msg) {
+    unsigned int COG = ais_msg.get_COG();
+    Serial.print("Returned COG: ");
+    Serial.print( (COG) / 10 ); Serial.print("."); Serial.print( (COG) % 10 ); Serial.println(" degrees");  
+}
+
+void showLatitude(AIS& ais_msg) {
+    long LAT = ais_msg.get_latitude();
+    Serial.print("Returned LAT: "); printDegrees(LAT); Serial.println(" degrees");  
+}
+
+void showLongitude(AIS& ais_msg) {
+    long LONG = ais_msg.get_longitude();
+    Serial.print("Returned LONG: "); printDegrees(LONG); Serial.println(" degrees");  
+}
+
 void setup() {
   Serial.begin(115200);
 
@@ -42,41 +72,12 @@ void setup() {
    *  Returned LAT: 47.5828 degrees
    *  Returned LONG: -122.3458 degrees
    */
-  uint8_t data[4];
 
-  // Get MMSI
-  unsigned long mmsi = ais_msg.get_mmsi();
-  Serial.print("Returned MMSI: ");
-  Serial.print(mmsi);
-  Serial.print(" ("); Serial.print(mmsi, 16); Serial.print(" )");
-  Serial.println("");
-  
-  // Get SOG
-  {
-    unsigned int SOG = ais_msg.get_SOG();
-    Serial.print("Returned SOG: ");
-    Serial.print( (SOG) / 10 ); Serial.print("."); Serial.print( (SOG) % 10 ); Serial.println(" nm");
-  }
-
-  // Get COG
-  {
-    unsigned int COG = ais_msg.get_COG();
-    Serial.print("Returned COG: ");
-    Serial.print( (COG) / 10 ); Serial.print("."); Serial.print( (COG) % 10 ); Serial.println(" degrees");
-  }
-
-  // Get Latitude
-  {
-    long LAT = ais_msg.get_latitude();
-    Serial.print("Returned LAT: "); printDegrees(LAT); Serial.println(" degrees");
-  }
-
-  // Get Longitude
-  {
-    long LONG = ais_msg.get_longitude();
-    Serial.print("Returned LONG: "); printDegrees(LONG); Serial.println(" degrees");
-  }
-
+  showMMSI(ais_msg);
+  showSOG(ais_msg);
+  showCOG(ais_msg);
+  showLatitude(ais_msg);
+  showLongitude(ais_msg);
 }
 
 void loop() {
