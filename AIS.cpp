@@ -128,11 +128,11 @@ bool AIS::getdata(unsigned int begin, unsigned int cnt, uint8_t *data, bool isSi
 	if (dstBitIdx == 0)
 		dstBitIdx = 8;
 
-	while (srcIdx < begin + cnt) {
+	while (cnt--) {
 		dstBitIdx--;
 		data[dstIdx] |= (getbit(srcIdx) << dstBitIdx);
 		srcIdx++;
-		if (0 == dstBitIdx) {
+		if (cnt && (0 == dstBitIdx)) {
 			dstBitIdx = 8;
 			dstIdx++;
 			data[dstIdx] = 0;
