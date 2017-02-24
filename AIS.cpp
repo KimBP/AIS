@@ -146,7 +146,7 @@ volatile unsigned long latest_u32;
 
 uint32_t AIS::get_u32(unsigned start, unsigned len)
 {
-	unsigned long val;
+	uint32_t val;
 
 	if (start + len > msgLen) return 0;
 	getdata(start, len, reinterpret_cast<uint8_t*>(&val));
@@ -155,7 +155,7 @@ uint32_t AIS::get_u32(unsigned start, unsigned len)
 
 int32_t AIS::get_i32(unsigned start, unsigned len)
 {
-	long val;
+	int32_t val;
 
 	if (start + len > msgLen) return 0;
 
@@ -254,13 +254,13 @@ uint8_t AIS::get_type()
 }
 
 
-unsigned long AIS::get_mmsi()
+uint32_t AIS::get_mmsi()
 {
 	return get_u32(8,30);
 }
 
 /* Notice latitude is returned in minutes with 4 digits precision */
-long AIS::get_latitude()
+int32_t AIS::get_latitude()
 {
 	unsigned int start;
 	unsigned int len  = 27;
@@ -280,7 +280,7 @@ long AIS::get_latitude()
 }
 
 /* Notice longitude is returned in minutes with 4 digits precision */
-long AIS::get_longitude()
+int32_t AIS::get_longitude()
 {
 	unsigned int start;
 	unsigned int len = 28;
