@@ -18,33 +18,38 @@ public:
 	bool getdata(unsigned int begin, unsigned int cnt, uint8_t *data, bool isigned = false);
 
 	uint32_t get_mmsi();
-	uint16_t get_SOG();
-	uint16_t get_COG();
-	uint16_t get_HDG();
+
 	int32_t get_latitude();
 	int32_t get_longitude();
+
 	int8_t get_rot();  // Rate of Turn
 	uint8_t get_repeat();
 	uint8_t get_navStatus();
 	uint8_t get_type();
 	uint8_t get_timeStamp();
 	uint8_t get_manIndicator();
-	uint32_t get_imo();
-	const char* get_shipname();
 	uint8_t get_shiptype();
-	uint16_t get_to_bow();
-	uint16_t get_to_stern();
-	uint8_t  get_to_port();
-	uint8_t  get_to_starboard();
-	uint8_t  get_epfd();
+	uint8_t get_to_port();
+	uint8_t get_to_starboard();
+	uint8_t get_epfd();
 	uint8_t get_draught();
-	const char* get_destination();
-	const char* get_callsign();
 	uint8_t get_ais_version();
 	uint8_t get_month();
 	uint8_t get_day();
 	uint8_t get_hour();
 	uint8_t get_minute();
+	uint8_t get_partno();
+
+	uint16_t get_SOG();
+	uint16_t get_COG();
+	uint16_t get_HDG();
+	uint16_t get_to_bow();
+	uint16_t get_to_stern();
+
+	uint32_t get_radio();
+	uint32_t get_mothership_mmsi();
+	uint32_t get_imo();
+
 	bool get_posAccuracy_flag();
 	bool get_raim_flag();
 	bool get_dte_flag();
@@ -54,10 +59,11 @@ public:
 	bool get_band_flag();
 	bool get_msg22_flag();
 	bool get_assigned_flag();
-	uint32_t get_radio();
-	uint8_t get_partno();
+
+	const char* get_shipname();
+	const char* get_destination();
+	const char* get_callsign();
 	const char* get_vendorid();
-	uint32_t get_mothership_mmsi();
 
 private:
 	void decode(unsigned int fillBits);
