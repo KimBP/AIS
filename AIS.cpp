@@ -245,26 +245,6 @@ uint8_t AIS::get_navStatus()
 	return get_u8(start,len);
 }
 
-uint8_t AIS::get_posAccuracy()
-{
-	unsigned int start;
-	unsigned int len=1;
-
-	switch (msgType) {
-	case 1:
-	case 2:
-	case 3:
-		start = 60;
-		break;
-	case 18:
-		start = 56;
-		break;
-	default:
-		return 0; // Not defined
-	}
-	return get_u8(start,len);
-}
-
 uint8_t AIS::get_type()
 {
 	return msgType;
@@ -401,20 +381,6 @@ uint8_t AIS::get_manIndicator()
 	case 3:
 		start = 143;
 		len = 2;
-		break;
-	default:
-		return 0;
-	}
-	return get_u8(start,len);
-}
-
-uint8_t AIS::get_dte()
-{
-	unsigned int start;
-	unsigned int len = 1;
-	switch(msgType) {
-	case 5:
-		start = 422;
 		break;
 	default:
 		return 0;
@@ -674,7 +640,40 @@ uint32_t AIS::get_mothership_mmsi()
 /********************************************************
  * flag get'ers (returns bool)
  *******************************************************/
-bool AIS::get_raim()
+bool AIS::get_posAccuracy_flag()
+{
+	unsigned int start;
+
+	switch (msgType) {
+	case 1:
+	case 2:
+	case 3:
+		start = 60;
+		break;
+	case 18:
+		start = 56;
+		break;
+	default:
+		return 0; // Not defined
+	}
+	return get_flag(start);
+}
+
+
+bool AIS::get_dte_flag()
+{
+	unsigned int start;
+	switch(msgType) {
+	case 5:
+		start = 422;
+		break;
+	default:
+		return 0;
+	}
+	return get_flag(start);
+}
+
+bool AIS::get_raim_flag()
 {
 	unsigned int start;
 	switch(msgType) {

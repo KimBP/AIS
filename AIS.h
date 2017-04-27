@@ -26,11 +26,9 @@ public:
 	int8_t get_rot();  // Rate of Turn
 	uint8_t get_repeat();
 	uint8_t get_navStatus();
-	uint8_t get_posAccuracy();
 	uint8_t get_type();
 	uint8_t get_timeStamp();
 	uint8_t get_manIndicator();
-	bool get_raim();
 	uint32_t get_imo();
 	const char* get_shipname();
 	uint8_t get_shiptype();
@@ -43,11 +41,13 @@ public:
 	const char* get_destination();
 	const char* get_callsign();
 	uint8_t get_ais_version();
-	uint8_t get_dte();
 	uint8_t get_month();
 	uint8_t get_day();
 	uint8_t get_hour();
 	uint8_t get_minute();
+	bool get_posAccuracy_flag();
+	bool get_raim_flag();
+	bool get_dte_flag();
 	bool get_cs_flag();
 	bool get_display_flag();
 	bool get_dsc_flag();
