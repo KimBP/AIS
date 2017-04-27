@@ -31,6 +31,9 @@ public:
 	uint8_t get_timeStamp();
 	uint8_t get_manIndicator();
 	uint8_t get_raim();
+	const char* get_shipname();
+	const char* get_destination();
+	const char* get_callsign();
 
 private:
 	void decode(unsigned int fillBits);
@@ -40,11 +43,19 @@ private:
 	int32_t get_i32(unsigned start, unsigned len);
 	int8_t get_i8(unsigned start, unsigned len);
 	uint8_t get_u8(unsigned start, unsigned len);
+	void get_string(char* str, unsigned start, unsigned bitlen, unsigned cnt);
 
 private:
+	static const uint8_t shipname_strlen = 20; // a bits
+	static const uint8_t destination_strlen = 20; // a bits
+	static const uint8_t callsign_strlen = 7; // a 6 bits
 	uint8_t msg[msg_max];
 	unsigned int msgLen;
 	uint8_t msgType;
+	//TODO: Allocates strings based on msgType
+	char shipname[shipname_strlen + 1];
+	char destination[destination_strlen+1];
+	char callsign[callsign_strlen+1];
 };
 
 
