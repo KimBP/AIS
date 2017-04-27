@@ -49,6 +49,7 @@ public:
 	uint8_t get_hour();
 	uint8_t get_minute();
 
+	const char* get_vendorid();
 
 private:
 	void decode(unsigned int fillBits);
@@ -64,6 +65,8 @@ private:
 	static const uint8_t shipname_strlen = 20; // a bits
 	static const uint8_t destination_strlen = 20; // a bits
 	static const uint8_t callsign_strlen = 7; // a 6 bits
+	static const uint8_t vendorid_strlen = 3; // a 6 bits
+
 	uint8_t msg[msg_max];
 	unsigned int msgLen;
 	uint8_t msgType;
@@ -71,6 +74,7 @@ private:
 	char shipname[shipname_strlen + 1];
 	char destination[destination_strlen+1];
 	char callsign[callsign_strlen+1];
+	char vendorid[vendorid_strlen+1];
 };
 
 

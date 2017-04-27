@@ -642,6 +642,21 @@ const char* AIS::get_shipname()
 	return shipname;
 }
 
+const char* AIS::get_vendorid()
+{
+	unsigned int start;
+	switch(msgType) {
+	case 24:
+		start = 48;
+		break;
+	default:
+		return 0;
+	}
+	get_string(vendorid, start, vendorid_strlen);
+	return vendorid;
+}
+
+
 const char* AIS::get_destination()
 {
 	unsigned int start;
