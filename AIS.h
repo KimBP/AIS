@@ -58,7 +58,7 @@ private:
 	int32_t get_i32(unsigned start, unsigned len);
 	int8_t get_i8(unsigned start, unsigned len);
 	uint8_t get_u8(unsigned start, unsigned len);
-	void get_string(char* str, unsigned start, unsigned bitlen, unsigned cnt);
+	void get_string(char* str, unsigned start, unsigned cnt);
 
 private:
 	static const uint8_t shipname_strlen = 20; // a bits

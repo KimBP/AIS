@@ -189,8 +189,9 @@ int8_t AIS::get_i8(unsigned start, unsigned len)
 	return val;
 }
 
-void AIS::get_string(char* str, unsigned start, unsigned charlen, unsigned cnt)
+void AIS::get_string(char* str, unsigned start, unsigned cnt)
 {
+	const unsigned charlen = 6; // Number of bits per char
 	for (unsigned i = 0; i < cnt; i++) {
 		str[i] = get_u8(start, charlen);
 		start += charlen;
@@ -624,10 +625,12 @@ uint8_t AIS::get_draught()
 	return get_u8(start,len);
 }
 
+/********************************************************
+ * const char* get'ers
+ *******************************************************/
 const char* AIS::get_shipname()
 {
 	unsigned int start;
-	unsigned int charlen = 6;
     switch(msgType) {
     case 5:
     	start = 112;
@@ -635,14 +638,13 @@ const char* AIS::get_shipname()
     default:
     	return 0;
     }
-	get_string(shipname, start, charlen, shipname_strlen);
+	get_string(shipname, start, shipname_strlen);
 	return shipname;
 }
 
 const char* AIS::get_destination()
 {
 	unsigned int start;
-	unsigned int charlen = 6;
 	switch(msgType) {
 	case 5:
 		start = 302;
@@ -650,14 +652,13 @@ const char* AIS::get_destination()
 	default:
 		return 0;
 	}
-	get_string(destination, start, charlen, destination_strlen);
+	get_string(destination, start, destination_strlen);
 	return destination;
 }
 
 const char* AIS::get_callsign()
 {
 	unsigned int start;
-	unsigned int charlen = 6;
 	switch(msgType) {
 	case 5:
 		start = 70;
@@ -665,6 +666,6 @@ const char* AIS::get_callsign()
 	default:
 		return 0;
 	}
-	get_string(callsign, start, charlen, callsign_strlen);
+	get_string(callsign, start, callsign_strlen);
 	return callsign;
 }
