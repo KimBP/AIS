@@ -30,7 +30,7 @@ public:
 	uint8_t get_type();
 	uint8_t get_timeStamp();
 	uint8_t get_manIndicator();
-	uint8_t get_raim();
+	bool get_raim();
 	uint32_t get_imo();
 	const char* get_shipname();
 	uint8_t get_shiptype();
@@ -48,7 +48,12 @@ public:
 	uint8_t get_day();
 	uint8_t get_hour();
 	uint8_t get_minute();
-
+	bool get_cs_flag();
+	bool get_display_flag();
+	bool get_dsc_flag();
+	bool get_band_flag();
+	bool get_msg22_flag();
+	bool get_assigned_flag();
 	const char* get_vendorid();
 
 private:
@@ -60,6 +65,7 @@ private:
 	int8_t get_i8(unsigned start, unsigned len);
 	uint8_t get_u8(unsigned start, unsigned len);
 	void get_string(char* str, unsigned start, unsigned cnt);
+	bool get_flag(unsigned start);
 
 private:
 	static const uint8_t shipname_strlen = 20; // a bits

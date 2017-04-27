@@ -199,6 +199,13 @@ void AIS::get_string(char* str, unsigned start, unsigned cnt)
 	str[cnt] = '\0';
 }
 
+bool AIS::get_flag(unsigned start)
+{
+	return (get_u8(start,1) == 1);
+}
+
+
+//// Public methods ////
 
 int8_t AIS::get_rot()
 {
@@ -394,25 +401,6 @@ uint8_t AIS::get_manIndicator()
 	case 3:
 		start = 143;
 		len = 2;
-		break;
-	default:
-		return 0;
-	}
-	return get_u8(start,len);
-}
-
-uint8_t AIS::get_raim()
-{
-	unsigned int start;
-	unsigned int len = 1;
-	switch(msgType) {
-	case 1:
-	case 2:
-	case 3:
-		start = 148;
-		break;
-	case 18:
-		start = 147;
 		break;
 	default:
 		return 0;
@@ -624,6 +612,107 @@ uint8_t AIS::get_draught()
 	}
 	return get_u8(start,len);
 }
+
+
+/********************************************************
+ * flag get'ers (returns bool)
+ *******************************************************/
+bool AIS::get_raim()
+{
+	unsigned int start;
+	switch(msgType) {
+	case 1:
+	case 2:
+	case 3:
+		start = 148;
+		break;
+	case 18:
+		start = 147;
+		break;
+	default:
+		return 0;
+	}
+	return get_flag(start);
+}
+
+bool AIS::get_cs_flag()
+{
+	unsigned int start;
+	switch(msgType) {
+	case 18:
+		start = 141;
+		break;
+	default:
+		return 0;
+	}
+	return get_flag(start);
+}
+
+bool AIS::get_display_flag()
+{
+	unsigned int start;
+	switch(msgType) {
+	case 18:
+		start = 142;
+		break;
+	default:
+		return false;
+	}
+	return get_flag(start);
+}
+
+bool AIS::get_dsc_flag()
+{
+	unsigned int start;
+	switch(msgType) {
+	case 18:
+		start = 143;
+		break;
+	default:
+		return false;
+	}
+	return get_flag(start);
+}
+
+bool AIS::get_band_flag()
+{
+	unsigned int start;
+	switch(msgType) {
+	case 18:
+		start = 144;
+		break;
+	default:
+		return 0;
+	}
+	return get_flag(start);
+}
+
+bool AIS::get_msg22_flag()
+{
+	unsigned int start;
+	switch(msgType) {
+	case 18:
+		start = 145;
+		break;
+	default:
+		return 0;
+	}
+	return get_flag(start);
+}
+
+bool AIS::get_assigned_flag()
+{
+	unsigned int start;
+	switch(msgType) {
+	case 18:
+		start = 146;
+		break;
+	default:
+		return 0;
+	}
+	return get_flag(start);
+}
+
 
 /********************************************************
  * const char* get'ers
