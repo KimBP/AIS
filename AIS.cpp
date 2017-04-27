@@ -12,6 +12,140 @@
 
 
 
+const uint16_t AIS::AisParamLength[] = {
+		2,   // AIS_PARAM_U8_REPEAT
+		30,  // AIS_PARAM_U32_MMSI,
+		4,   // AIS_PARAM_E_STATUS,
+		8,   // AIS_PARAM_I8_TURN,
+		10,  // AIS_PARAM_U16_SOG,
+		1,   // AIS_PARAM_B_ACCURACY,
+		28,  // AIS_PARAM_I32_LONG,
+		27,  // AIS_PARAM_I32_LAT,
+		12,  // AIS_PARAM_U16_COG,
+		9,   // AIS_PARAM_U16_HEADING,
+		6,   // AIS_PARAM_U8_SECOND,
+		2,   // AIS_PARAM_E_MANEUVER,
+		1,   // AIS_PARAM_B_RAIM,
+		19,  // AIS_PARAM_U32_RADIO,
+		2,   // AIS_PARAM_U8_AIS_VERSION,
+		30,  // AIS_PARAM_U32_IMO,
+		42,  // AIS_PARAM_T_CALLSIGN,
+		120, // AIS_PARAM_T_SHIPNAME,
+		8,   // AIS_PARAM_E_SHIPTYPE,
+		9,   // AIS_PARAM_U16_TO_BOW,
+		9,   // AIS_PARAM_U16_TO_STERN,
+		6,   // AIS_PARAM_U8_TO_PORT,
+		6,   // AIS_PARAM_U8_TO_STARBOARD,
+		4,   // AIS_PARAM_E_EPFD,
+		4,   // AIS_PARAM_U8_MONTH,
+		5,   // AIS_PARAM_U8_DAY,
+		5,   // AIS_PARAM_U8_HOUR,
+		6,   // AIS_PARAM_U8_MINUTE,
+		8,   // AIS_PARAM_U8_DRAUGHT,
+		120, // AIS_PARAM_T_DESTINATION,
+		1,   // AIS_PARAM_B_DTE,
+		1,   // AIS_PARAM_B_CS,
+		1,   // AIS_PARAM_B_DISPLAY,
+		1,   // AIS_PARAM_B_DSC,
+		1,   // AIS_PARAM_B_BAND,
+		1,   // AIS_PARAM_B_MSG22,
+		1,   // AIS_PARAM_B_ASSIGNED,
+		2,   // AIS_PARAM_U8_PARTNO,
+		18,  // AIS_PARAM_T_VENDORID,
+		4,   // AIS_PARAM_U8_MODEL,
+		20,  // AIS_PARAM_U32_SERIAL,
+		30,  // AIS_PARAM_U32_MOTHERSHIP_MMSI,
+};
+
+const struct AIS::AisTypeMsgPair AIS::AisMsgTypes[] = {
+		{ AIS_MSG_1_2_3_POS_REPORT_CLASS_A, 1 },
+		{ AIS_MSG_1_2_3_POS_REPORT_CLASS_A, 2 },
+		{ AIS_MSG_1_2_3_POS_REPORT_CLASS_A, 3 },
+		{ AIS_MSG_5_STATIC_AND_VOYAGE,      5 },
+		{ AIS_MSG_18_CS_POS_REPORT_CLASS_B, 18 },
+		{ AIS_MSG_24_STATIC_DATA_REPORT,    24 },
+		{ AIS_MSG_MAX, 0 } // Must be last
+};
+
+const struct AIS::AisParamPosPair AIS::AisMsgPosReportClassA[] = {
+		{ AIS_PARAM_E_STATUS,      38 },
+		{ AIS_PARAM_I8_TURN,       42 },
+		{ AIS_PARAM_U16_SOG,       50 },
+		{ AIS_PARAM_B_ACCURACY,    60 },
+		{ AIS_PARAM_I32_LONG,      61 },
+		{ AIS_PARAM_I32_LAT,       89 },
+		{ AIS_PARAM_U16_COG,      116 },
+		{ AIS_PARAM_U16_HEADING,  128 },
+		{ AIS_PARAM_U8_SECOND,    137 },
+		{ AIS_PARAM_E_MANEUVER,   143 },
+		{ AIS_PARAM_B_RAIM,       148 },
+		{ AIS_PARAM_U32_RADIO,    149 },
+		{ AIS_PARAM_MAX, 0 } // Must be last
+};
+
+const struct AIS::AisParamPosPair AIS::AisMsgStaticAndVoyage[] = {
+		{ AIS_PARAM_U8_AIS_VERSION,   38 },
+		{ AIS_PARAM_U32_IMO,          40 },
+		{ AIS_PARAM_T_CALLSIGN,       70 },
+		{ AIS_PARAM_T_SHIPNAME,      112 },
+		{ AIS_PARAM_E_SHIPTYPE,      232 },
+		{ AIS_PARAM_U16_TO_BOW,      240 },
+		{ AIS_PARAM_U16_TO_STERN,    249 },
+		{ AIS_PARAM_U8_TO_PORT,      258 },
+		{ AIS_PARAM_U8_TO_STARBOARD, 264 },
+		{ AIS_PARAM_E_EPFD,          270 },
+		{ AIS_PARAM_U8_MONTH,        274 },
+		{ AIS_PARAM_U8_DAY,          278 },
+		{ AIS_PARAM_U8_HOUR,         283 },
+		{ AIS_PARAM_U8_MINUTE,       288 },
+		{ AIS_PARAM_U8_DRAUGHT,      294 },
+		{ AIS_PARAM_T_DESTINATION,   302 },
+		{ AIS_PARAM_B_DTE,           422 },
+		{ AIS_PARAM_MAX, 0 } // Must be last
+};
+
+const struct AIS::AisParamPosPair AIS::AisMsgCsPosReportClassB[] = {
+		{ AIS_PARAM_U16_SOG,          46 },
+		{ AIS_PARAM_B_ACCURACY,       56 },
+		{ AIS_PARAM_I32_LONG,         57 },
+		{ AIS_PARAM_I32_LAT,          85 },
+		{ AIS_PARAM_U16_COG,         112 },
+		{ AIS_PARAM_U16_HEADING,     124 },
+		{ AIS_PARAM_U8_SECOND,       133 },
+		{ AIS_PARAM_B_CS,            141 },
+		{ AIS_PARAM_B_DISPLAY,       142 },
+		{ AIS_PARAM_B_DSC,           143 },
+		{ AIS_PARAM_B_BAND,          144 },
+		{ AIS_PARAM_B_MSG22,         145 },
+		{ AIS_PARAM_B_ASSIGNED,      146 },
+		{ AIS_PARAM_B_RAIM,          147 },
+		{AIS_PARAM_U32_RADIO,        148 },
+		{ AIS_PARAM_MAX, 0 } // Must be last
+};
+
+const struct AIS::AisParamPosPair AIS::AisMsgStaticDataRaport[] = {
+		{ AIS_PARAM_U8_PARTNO,        38 }, // A-B switch
+		{ AIS_PARAM_T_SHIPNAME,       40 }, // A
+		{ AIS_PARAM_E_SHIPTYPE,       40 }, // B
+		{ AIS_PARAM_T_VENDORID,       48 },
+		{ AIS_PARAM_U8_MODEL,         66 },
+		{ AIS_PARAM_U32_SERIAL,       70 },
+		{ AIS_PARAM_T_CALLSIGN,       90 },
+		{ AIS_PARAM_U16_TO_BOW,      132 },
+		{ AIS_PARAM_U16_TO_STERN,    141 },
+		{ AIS_PARAM_U8_TO_PORT,      150 },
+		{ AIS_PARAM_U8_TO_STARBOARD, 156 },
+		{ AIS_PARAM_U32_MOTHERSHIP_MMSI, 132 }, // Either this or bow,stern, port, starboard
+		{ AIS_PARAM_MAX, 0 } // Must be last
+};
+
+const struct AIS::AisParamPosPair* AIS::AisMsgParams[AIS_MSG_MAX] = {
+		&AisMsgPosReportClassA[0],
+		&AisMsgStaticAndVoyage[0],
+		&AisMsgCsPosReportClassB[0],
+		&AisMsgStaticDataRaport[0]
+};
+
 AIS::AIS(const char *AISbitstream, unsigned int fillBits)
 : msgLen(0)
 {
@@ -27,7 +161,10 @@ AIS::AIS(const char *AISbitstream, unsigned int fillBits)
 	// Time to decode the AIS data
 	decode(fillBits);
 
-	getdata(0,6, &msgType);  // Will be used a lot
+	uint8_t msgNumeric;
+	getdata(0,6, &msgNumeric);  // Will be used a lot
+
+	msgType = numericToMessage(msgNumeric);
 }
 
 
@@ -143,6 +280,34 @@ bool AIS::getdata(unsigned int begin, unsigned int cnt, uint8_t *data, bool isSi
 	return true;
 }
 
+bool AIS::getParamStart(enum AIS::Nmea0183AisParams param, unsigned& start)
+{
+	const struct AisParamPosPair* pparam = AisMsgParams[msgType];
+
+	while (pparam->param != AIS_PARAM_MAX) {
+		if (pparam->param == param) {
+			start = pparam->start;
+			return true;
+		}
+		pparam++;
+	}
+
+	return false;
+
+}
+
+enum AIS::Nmea0183AisMessages AIS::numericToMessage(uint8_t msgNumeric)
+{
+	unsigned i = 0;
+	while (AisMsgTypes[i].msgEnum != AIS_MSG_MAX) {
+		if (AisMsgTypes[i].msgNumeric == msgNumeric) {
+			return AisMsgTypes[i].msgEnum;
+		}
+		i++;
+	}
+	return AIS_MSG_MAX;
+}
+
 uint32_t AIS::get_u32(unsigned start, unsigned len)
 {
 	uint32_t val;
@@ -151,6 +316,17 @@ uint32_t AIS::get_u32(unsigned start, unsigned len)
 	getdata(start, len, reinterpret_cast<uint8_t*>(&val));
 	return htonl(val);
 }
+
+uint32_t AIS::get_u32(enum AIS::Nmea0183AisParams param)
+{
+	unsigned int start;
+	if (! getParamStart(param, start)) {
+		return 0;
+	}
+	unsigned int len = AisParamLength[param];
+	return get_u32(start,len);
+}
+
 
 int32_t AIS::get_i32(unsigned start, unsigned len)
 {
@@ -162,6 +338,17 @@ int32_t AIS::get_i32(unsigned start, unsigned len)
 	return htonl(val);
 }
 
+int32_t AIS::get_i32(enum AIS::Nmea0183AisParams param)
+{
+	unsigned int start;
+	if (! getParamStart(param, start)) {
+		return 0;
+	}
+	unsigned int len = AisParamLength[param];
+	return get_i32(start,len);
+}
+
+
 uint16_t AIS::get_u16(unsigned start, unsigned len)
 {
 	uint16_t val;
@@ -170,6 +357,17 @@ uint16_t AIS::get_u16(unsigned start, unsigned len)
 	getdata(start, len, reinterpret_cast<uint8_t*>(&val));
 	return htons(val);
 }
+
+uint16_t AIS::get_u16(enum AIS::Nmea0183AisParams param)
+{
+	unsigned int start;
+	if (! getParamStart(param, start)) {
+		return 0;
+	}
+	unsigned int len = AisParamLength[param];
+	return get_u16(start,len);
+}
+
 
 uint8_t AIS::get_u8(unsigned start, unsigned len)
 {
@@ -180,6 +378,17 @@ uint8_t AIS::get_u8(unsigned start, unsigned len)
 	return val;
 }
 
+uint8_t AIS::get_u8(enum AIS::Nmea0183AisParams param)
+{
+	unsigned int start;
+	if (! getParamStart(param, start)) {
+		return 0;
+	}
+	unsigned int len = AisParamLength[param];
+	return get_u8(start,len);
+}
+
+
 int8_t AIS::get_i8(unsigned start, unsigned len)
 {
 	int8_t val;
@@ -188,6 +397,17 @@ int8_t AIS::get_i8(unsigned start, unsigned len)
 	getdata(start,len, reinterpret_cast<uint8_t*>(&val), true);
 	return val;
 }
+
+int8_t AIS::get_i8(enum AIS::Nmea0183AisParams param)
+{
+	unsigned int start;
+	if (! getParamStart(param, start)) {
+		return 0;
+	}
+	unsigned int len = AisParamLength[param];
+	return get_i8(start,len);
+}
+
 
 void AIS::get_string(char* str, unsigned start, unsigned cnt)
 {
@@ -199,639 +419,31 @@ void AIS::get_string(char* str, unsigned start, unsigned cnt)
 	str[cnt] = '\0';
 }
 
-bool AIS::get_flag(unsigned start)
+
+
+const char* AIS::get_string(enum AIS::Nmea0183AisParams param, char* str)
 {
+	unsigned int start;
+	if (! getParamStart(param, start)) {
+		str[0] = '\0';
+		return NULL;
+	}
+	unsigned int len = AisParamLength[param];
+
+	get_string(str, start, len/bits_pr_char);
+	return str;
+}
+
+
+bool AIS::get_flag(enum AIS::Nmea0183AisParams param)
+{
+	unsigned int start;
+	if (! getParamStart(param, start)) {
+		return false;
+	}
+
 	return (get_u8(start,1) == 1);
 }
 
 
-//// Public methods ////
 
-int8_t AIS::get_rot()
-{
-	unsigned int start, len;
-	switch (msgType) {
-	case 1:
-	case 2:
-	case 3:
-		start = 42;
-		len = 8;
-		break;
-	default:
-		return 0;
-	}
-	return get_i8(start,len);
-}
-
-uint8_t AIS::get_repeat()
-{
-	return get_u8(6,2);
-
-}
-
-uint8_t AIS::get_navStatus()
-{
-	unsigned int start, len;
-	switch (msgType) {
-	case 1:
-	case 2:
-	case 3:
-		start = 38;
-		len = 4;
-		break;
-	default:
-		return 15; // Not defined
-	}
-	return get_u8(start,len);
-}
-
-uint8_t AIS::get_type()
-{
-	return msgType;
-}
-
-
-uint32_t AIS::get_mmsi()
-{
-	return get_u32(8,30);
-}
-
-/* Notice latitude is returned in minutes with 4 digits precision */
-int32_t AIS::get_latitude()
-{
-	unsigned int start;
-	unsigned int len  = 27;
-	switch (msgType) {
-	case 1:
-	case 2:
-	case 3:
-		start=89;
-		break;
-	case 18:
-		start=85;
-		break;
-	default:
-		return 0;
-	}
-	return get_i32(start,len);
-}
-
-/* Notice longitude is returned in minutes with 4 digits precision */
-int32_t AIS::get_longitude()
-{
-	unsigned int start;
-	unsigned int len = 28;
-	switch(msgType) {
-	case 1:
-	case 2:
-	case 3:
-		start = 61;
-		break;
-	case 18:
-		start = 57;
-		break;
-	default:
-		return 0;
-	}
-	return get_i32(start,len);
-}
-
-uint16_t AIS::get_SOG()
-{
-	unsigned int start;
-	unsigned int len = 10;
-	switch(msgType) {
-	case 1:
-	case 2:
-	case 3:
-		start = 50;
-		break;
-	case 18:
-		start = 46;
-		break;
-	default:
-		return 0;
-	}
-	return get_u16(start, len);
-}
-
-uint16_t AIS::get_COG()
-{
-	unsigned int start;
-	unsigned int len = 12;
-	switch (msgType) {
-	case 1:
-	case 2:
-	case 3:
-		start = 116;
-		break;
-	case 18:
-		start = 112;
-		break;
-	default:
-		return 0;
-	}
-	return get_u16(start, len);
-}
-
-uint16_t AIS::get_HDG()
-{
-	unsigned int start;
-	unsigned int len=9;
-	switch(msgType) {
-	case 1:
-	case 2:
-	case 3:
-		start = 128;
-		break;
-	case 18:
-		start = 124;
-		break;
-	default:
-		return 511;
-	}
-	return get_u16(start,len);
-}
-
-uint8_t AIS::get_timeStamp()
-{
-	unsigned int start;
-	unsigned int len=6;
-	switch(msgType) {
-	case 1:
-	case 2:
-	case 3:
-		start = 137;
-		break;
-	case 18:
-		start = 133;
-		break;
-	default:
-		return 0;
-	}
-	return get_u8(start,len);
-}
-
-uint8_t AIS::get_manIndicator()
-{
-	unsigned int start,len;
-	switch(msgType) {
-	case 1:
-	case 2:
-	case 3:
-		start = 143;
-		len = 2;
-		break;
-	default:
-		return 0;
-	}
-	return get_u8(start,len);
-}
-
-uint8_t AIS::get_ais_version()
-{
-	unsigned int start;
-	unsigned int len = 2;
-	switch(msgType) {
-	case 5:
-		start = 38;
-		break;
-	default:
-		return 0;
-	}
-	return get_u8(start,len);
-}
-
-uint8_t AIS::get_epfd()
-{
-	unsigned int start;
-	unsigned int len = 4;
-	switch(msgType) {
-	case 5:
-		start = 270;
-		break;
-	default:
-		return 0;
-	}
-	return get_u8(start,len);
-
-}
-
-uint16_t AIS::get_to_bow()
-{
-	unsigned int start;
-	unsigned int len = 9;
-	switch(msgType) {
-	case 5:
-		start = 240;
-		break;
-	case 24:
-		start = 132;
-		break;
-	default:
-		return 0;
-	}
-	return get_u8(start,len);
-
-}
-uint16_t AIS::get_to_stern()
-{
-	unsigned int start;
-	unsigned int len = 9;
-	switch(msgType) {
-	case 5:
-		start = 249;
-		break;
-	case 24:
-		start = 141;
-		break;
-	default:
-		return 0;
-	}
-	return get_u8(start,len);
-
-}
-
-uint8_t AIS::get_to_port()
-{
-	unsigned int start;
-	unsigned int len = 6;
-	switch(msgType) {
-	case 5:
-		start = 258;
-		break;
-	case 24:
-		start = 150;
-		break;
-	default:
-		return 0;
-	}
-	return get_u8(start,len);
-
-}
-
-uint8_t AIS::get_to_starboard()
-{
-	unsigned int start;
-	unsigned int len = 6;
-	switch(msgType) {
-	case 5:
-		start = 264;
-		break;
-	case 24:
-		start = 156;
-		break;
-	default:
-		return 0;
-	}
-	return get_u8(start,len);
-
-}
-
-uint8_t AIS::get_shiptype()
-{
-	unsigned int start;
-	unsigned int len = 8;
-	switch(msgType) {
-	case 5:
-		start = 232;
-		break;
-	case 24:
-		start = 40;
-		break;
-	default:
-		return 0;
-	}
-	return get_u8(start,len);
-
-}
-
-uint8_t AIS::get_month()
-{
-	unsigned int start;
-	unsigned int len = 4;
-	switch(msgType) {
-	case 5:
-		start = 274;
-		break;
-	default:
-		return 0;
-	}
-	return get_u8(start,len);
-
-}
-
-uint8_t AIS::get_day()
-{
-	unsigned int start;
-	unsigned int len = 5;
-	switch(msgType) {
-	case 5:
-		start = 278;
-		break;
-	default:
-		return 0;
-	}
-	return get_u8(start,len);
-
-}
-
-uint8_t AIS::get_hour()
-{
-	unsigned int start;
-	unsigned int len = 5;
-	switch(msgType) {
-	case 5:
-		start = 283;
-		break;
-	default:
-		return 0;
-	}
-	return get_u8(start,len);
-
-}
-
-uint8_t AIS::get_minute()
-{
-	unsigned int start;
-	unsigned int len = 6;
-	switch(msgType) {
-	case 5:
-		start = 288;
-		break;
-	default:
-		return 0;
-	}
-	return get_u8(start,len);
-
-}
-
-uint32_t AIS::get_imo()
-{
-	unsigned int start;
-	unsigned int len = 30;
-	switch(msgType) {
-	case 5:
-		start = 40;
-		break;
-	default:
-		return 0;
-	}
-	return get_u32(start,len);
-}
-
-uint8_t AIS::get_draught()
-{
-	unsigned int start;
-	unsigned int len = 8;
-	switch(msgType) {
-	case 5:
-		start = 294;
-		break;
-	default:
-		return 0;
-	}
-	return get_u8(start,len);
-}
-
-uint8_t AIS::get_partno()
-{
-	unsigned int start;
-	unsigned int len = 2;
-	switch(msgType) {
-	case 24:
-		start = 38;
-		break;
-	default:
-		return 0;
-	}
-	return get_u8(start,len);
-}
-
-uint32_t AIS::get_radio()
-{
-	unsigned int start;
-	unsigned int len = 20;
-	switch(msgType) {
-	case 18:
-		start = 148;
-		break;
-	default:
-		return 0;
-	}
-	return get_u32(start,len);
-}
-
-uint32_t AIS::get_mothership_mmsi()
-{
-	unsigned int start;
-	unsigned int len = 30;
-	switch(msgType) {
-	case 24:
-		start = 132;
-		break;
-	default:
-		return 0;
-	}
-	return get_u32(start,len);
-}
-
-
-/********************************************************
- * flag get'ers (returns bool)
- *******************************************************/
-bool AIS::get_posAccuracy_flag()
-{
-	unsigned int start;
-
-	switch (msgType) {
-	case 1:
-	case 2:
-	case 3:
-		start = 60;
-		break;
-	case 18:
-		start = 56;
-		break;
-	default:
-		return 0; // Not defined
-	}
-	return get_flag(start);
-}
-
-
-bool AIS::get_dte_flag()
-{
-	unsigned int start;
-	switch(msgType) {
-	case 5:
-		start = 422;
-		break;
-	default:
-		return 0;
-	}
-	return get_flag(start);
-}
-
-bool AIS::get_raim_flag()
-{
-	unsigned int start;
-	switch(msgType) {
-	case 1:
-	case 2:
-	case 3:
-		start = 148;
-		break;
-	case 18:
-		start = 147;
-		break;
-	default:
-		return 0;
-	}
-	return get_flag(start);
-}
-
-bool AIS::get_cs_flag()
-{
-	unsigned int start;
-	switch(msgType) {
-	case 18:
-		start = 141;
-		break;
-	default:
-		return 0;
-	}
-	return get_flag(start);
-}
-
-bool AIS::get_display_flag()
-{
-	unsigned int start;
-	switch(msgType) {
-	case 18:
-		start = 142;
-		break;
-	default:
-		return false;
-	}
-	return get_flag(start);
-}
-
-bool AIS::get_dsc_flag()
-{
-	unsigned int start;
-	switch(msgType) {
-	case 18:
-		start = 143;
-		break;
-	default:
-		return false;
-	}
-	return get_flag(start);
-}
-
-bool AIS::get_band_flag()
-{
-	unsigned int start;
-	switch(msgType) {
-	case 18:
-		start = 144;
-		break;
-	default:
-		return 0;
-	}
-	return get_flag(start);
-}
-
-bool AIS::get_msg22_flag()
-{
-	unsigned int start;
-	switch(msgType) {
-	case 18:
-		start = 145;
-		break;
-	default:
-		return 0;
-	}
-	return get_flag(start);
-}
-
-bool AIS::get_assigned_flag()
-{
-	unsigned int start;
-	switch(msgType) {
-	case 18:
-		start = 146;
-		break;
-	default:
-		return 0;
-	}
-	return get_flag(start);
-}
-
-
-/********************************************************
- * const char* get'ers
- *******************************************************/
-const char* AIS::get_shipname()
-{
-	unsigned int start;
-    switch(msgType) {
-    case 5:
-    	start = 112;
-    	break;
-    case 24:
-    	start = 40;
-    	break;
-    default:
-    	return 0;
-    }
-	get_string(shipname, start, shipname_strlen);
-	return shipname;
-}
-
-const char* AIS::get_vendorid()
-{
-	unsigned int start;
-	switch(msgType) {
-	case 24:
-		start = 48;
-		break;
-	default:
-		return 0;
-	}
-	get_string(vendorid, start, vendorid_strlen);
-	return vendorid;
-}
-
-
-const char* AIS::get_destination()
-{
-	unsigned int start;
-	switch(msgType) {
-	case 5:
-		start = 302;
-		break;
-	default:
-		return 0;
-	}
-	get_string(destination, start, destination_strlen);
-	return destination;
-}
-
-const char* AIS::get_callsign()
-{
-	unsigned int start;
-	switch(msgType) {
-	case 5:
-		start = 70;
-		break;
-	case 24:
-		start = 90;
-		break;
-	default:
-		return 0;
-	}
-	get_string(callsign, start, callsign_strlen);
-	return callsign;
-}
