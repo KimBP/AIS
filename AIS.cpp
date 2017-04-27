@@ -459,6 +459,9 @@ uint16_t AIS::get_to_bow()
 	case 5:
 		start = 240;
 		break;
+	case 24:
+		start = 132;
+		break;
 	default:
 		return 0;
 	}
@@ -472,6 +475,9 @@ uint16_t AIS::get_to_stern()
 	switch(msgType) {
 	case 5:
 		start = 249;
+		break;
+	case 24:
+		start = 141;
 		break;
 	default:
 		return 0;
@@ -488,6 +494,9 @@ uint8_t AIS::get_to_port()
 	case 5:
 		start = 258;
 		break;
+	case 24:
+		start = 150;
+		break;
 	default:
 		return 0;
 	}
@@ -503,6 +512,9 @@ uint8_t AIS::get_to_starboard()
 	case 5:
 		start = 264;
 		break;
+	case 24:
+		start = 156;
+		break;
 	default:
 		return 0;
 	}
@@ -517,6 +529,9 @@ uint8_t AIS::get_shiptype()
 	switch(msgType) {
 	case 5:
 		start = 232;
+		break;
+	case 24:
+		start = 40;
 		break;
 	default:
 		return 0;
@@ -611,6 +626,48 @@ uint8_t AIS::get_draught()
 		return 0;
 	}
 	return get_u8(start,len);
+}
+
+uint8_t AIS::get_partno()
+{
+	unsigned int start;
+	unsigned int len = 2;
+	switch(msgType) {
+	case 24:
+		start = 38;
+		break;
+	default:
+		return 0;
+	}
+	return get_u8(start,len);
+}
+
+uint32_t AIS::get_radio()
+{
+	unsigned int start;
+	unsigned int len = 20;
+	switch(msgType) {
+	case 18:
+		start = 148;
+		break;
+	default:
+		return 0;
+	}
+	return get_u32(start,len);
+}
+
+uint32_t AIS::get_mothership_mmsi()
+{
+	unsigned int start;
+	unsigned int len = 30;
+	switch(msgType) {
+	case 24:
+		start = 132;
+		break;
+	default:
+		return 0;
+	}
+	return get_u32(start,len);
 }
 
 
@@ -724,6 +781,9 @@ const char* AIS::get_shipname()
     case 5:
     	start = 112;
     	break;
+    case 24:
+    	start = 40;
+    	break;
     default:
     	return 0;
     }
@@ -766,6 +826,9 @@ const char* AIS::get_callsign()
 	switch(msgType) {
 	case 5:
 		start = 70;
+		break;
+	case 24:
+		start = 90;
 		break;
 	default:
 		return 0;

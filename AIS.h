@@ -54,7 +54,10 @@ public:
 	bool get_band_flag();
 	bool get_msg22_flag();
 	bool get_assigned_flag();
+	uint32_t get_radio();
+	uint8_t get_partno();
 	const char* get_vendorid();
+	uint32_t get_mothership_mmsi();
 
 private:
 	void decode(unsigned int fillBits);
