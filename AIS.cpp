@@ -11,6 +11,7 @@
 #define htons(x) ( ((x)<<8) | (((x)>>8)&0xFF) )
 
 
+
 AIS::AIS(const char *AISbitstream, unsigned int fillBits)
 : msgLen(0)
 {
@@ -417,6 +418,212 @@ uint8_t AIS::get_raim()
 	}
 	return get_u8(start,len);
 }
+
+uint8_t AIS::get_dte()
+{
+	unsigned int start;
+	unsigned int len = 1;
+	switch(msgType) {
+	case 5:
+		start = 422;
+		break;
+	default:
+		return 0;
+	}
+	return get_u8(start,len);
+}
+
+uint8_t AIS::get_ais_version()
+{
+	unsigned int start;
+	unsigned int len = 2;
+	switch(msgType) {
+	case 5:
+		start = 38;
+		break;
+	default:
+		return 0;
+	}
+	return get_u8(start,len);
+}
+
+uint8_t AIS::get_epfd()
+{
+	unsigned int start;
+	unsigned int len = 4;
+	switch(msgType) {
+	case 5:
+		start = 270;
+		break;
+	default:
+		return 0;
+	}
+	return get_u8(start,len);
+
+}
+
+uint16_t AIS::get_to_bow()
+{
+	unsigned int start;
+	unsigned int len = 9;
+	switch(msgType) {
+	case 5:
+		start = 240;
+		break;
+	default:
+		return 0;
+	}
+	return get_u8(start,len);
+
+}
+uint16_t AIS::get_to_stern()
+{
+	unsigned int start;
+	unsigned int len = 9;
+	switch(msgType) {
+	case 5:
+		start = 249;
+		break;
+	default:
+		return 0;
+	}
+	return get_u8(start,len);
+
+}
+
+uint8_t AIS::get_to_port()
+{
+	unsigned int start;
+	unsigned int len = 6;
+	switch(msgType) {
+	case 5:
+		start = 258;
+		break;
+	default:
+		return 0;
+	}
+	return get_u8(start,len);
+
+}
+
+uint8_t AIS::get_to_starboard()
+{
+	unsigned int start;
+	unsigned int len = 6;
+	switch(msgType) {
+	case 5:
+		start = 264;
+		break;
+	default:
+		return 0;
+	}
+	return get_u8(start,len);
+
+}
+
+uint8_t AIS::get_shiptype()
+{
+	unsigned int start;
+	unsigned int len = 8;
+	switch(msgType) {
+	case 5:
+		start = 232;
+		break;
+	default:
+		return 0;
+	}
+	return get_u8(start,len);
+
+}
+
+uint8_t AIS::get_month()
+{
+	unsigned int start;
+	unsigned int len = 4;
+	switch(msgType) {
+	case 5:
+		start = 274;
+		break;
+	default:
+		return 0;
+	}
+	return get_u8(start,len);
+
+}
+
+uint8_t AIS::get_day()
+{
+	unsigned int start;
+	unsigned int len = 5;
+	switch(msgType) {
+	case 5:
+		start = 278;
+		break;
+	default:
+		return 0;
+	}
+	return get_u8(start,len);
+
+}
+
+uint8_t AIS::get_hour()
+{
+	unsigned int start;
+	unsigned int len = 5;
+	switch(msgType) {
+	case 5:
+		start = 283;
+		break;
+	default:
+		return 0;
+	}
+	return get_u8(start,len);
+
+}
+
+uint8_t AIS::get_minute()
+{
+	unsigned int start;
+	unsigned int len = 6;
+	switch(msgType) {
+	case 5:
+		start = 288;
+		break;
+	default:
+		return 0;
+	}
+	return get_u8(start,len);
+
+}
+
+uint32_t AIS::get_imo()
+{
+	unsigned int start;
+	unsigned int len = 30;
+	switch(msgType) {
+	case 5:
+		start = 40;
+		break;
+	default:
+		return 0;
+	}
+	return get_u32(start,len);
+}
+
+uint8_t AIS::get_draught()
+{
+	unsigned int start;
+	unsigned int len = 8;
+	switch(msgType) {
+	case 5:
+		start = 294;
+		break;
+	default:
+		return 0;
+	}
+	return get_u8(start,len);
+}
+
 const char* AIS::get_shipname()
 {
 	unsigned int start;

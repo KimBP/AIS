@@ -31,9 +31,24 @@ public:
 	uint8_t get_timeStamp();
 	uint8_t get_manIndicator();
 	uint8_t get_raim();
+	uint32_t get_imo();
 	const char* get_shipname();
+	uint8_t get_shiptype();
+	uint16_t get_to_bow();
+	uint16_t get_to_stern();
+	uint8_t  get_to_port();
+	uint8_t  get_to_starboard();
+	uint8_t  get_epfd();
+	uint8_t get_draught();
 	const char* get_destination();
 	const char* get_callsign();
+	uint8_t get_ais_version();
+	uint8_t get_dte();
+	uint8_t get_month();
+	uint8_t get_day();
+	uint8_t get_hour();
+	uint8_t get_minute();
+
 
 private:
 	void decode(unsigned int fillBits);
