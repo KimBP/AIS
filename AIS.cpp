@@ -166,11 +166,11 @@ AIS::AIS(const char *AISbitstream, unsigned int fillBits)
 
 	// Time to decode the AIS data
 	decode(fillBits);
+	uint8_t msgNum;
+	getdata(0,6, &msgNum);  // Will be used a lot
 
-	uint8_t msgNumeric;
-	getdata(0,6, &msgNumeric);  // Will be used a lot
-
-	msgType = numericToMessage(msgNumeric);
+	msgType = numericToMessage(msgNum);
+	msgNumeric = msgNum;
 }
 
 

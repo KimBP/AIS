@@ -33,6 +33,7 @@ public:
 	uint8_t get_repeat() { return get_u8(6,2); };
 
 	enum Nmea0183AisMessages get_type() { return msgType; };
+	unsigned int get_numeric_type() { return msgNumeric; };
 
 	/* Notice latitude is returned in minutes with 4 digits precision */
 	int32_t get_latitude() {return get_i32(AIS_PARAM_I32_LAT); };
@@ -185,6 +186,7 @@ private:
 	uint8_t msg[msg_max];
 	unsigned int msgLen;
 	Nmea0183AisMessages msgType;
+	unsigned int msgNumeric;
 	//TODO: Allocates strings based on msgType
 	char shipname[shipname_strlen + 1];
 	char destination[destination_strlen+1];
