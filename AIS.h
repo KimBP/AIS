@@ -14,6 +14,7 @@ class AIS
 public:
 	enum Nmea0183AisMessages {
 		AIS_MSG_1_2_3_POS_REPORT_CLASS_A,
+		AIS_MSG_4_BASE_STATION_REPORT,
 		AIS_MSG_5_STATIC_AND_VOYAGE,
 		AIS_MSG_18_CS_POS_REPORT_CLASS_B,
 		AIS_MSG_24_STATIC_DATA_REPORT,
@@ -144,6 +145,7 @@ private:
 	static const struct AisParamPosPair* AisMsgParams[AIS_MSG_MAX];
 
 	static const struct AisParamPosPair AisMsgPosReportClassA[];
+	static const struct AisParamPosPair AisMsgBaseStationReport[];
 	static const struct AisParamPosPair AisMsgStaticAndVoyage[];
 	static const struct AisParamPosPair AisMsgCsPosReportClassB[];
 	static const struct AisParamPosPair AisMsgStaticDataRaport[];
