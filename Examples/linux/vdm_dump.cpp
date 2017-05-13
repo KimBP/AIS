@@ -55,7 +55,8 @@ static int lineno = 0;
 void printPosReport(AIS& ais)
 {
   printf("%d (PosReport): ", ais.get_numeric_type());
-  printf("mmsi=%d", ais.get_mmsi());
+  printf("mmsi=%d ", ais.get_mmsi());
+  printf("SOG=%d", ais.get_SOG());
   printf("\n");
 }
 
