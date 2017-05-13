@@ -418,11 +418,20 @@ int8_t AIS::get_i8(enum AIS::Nmea0183AisParams param)
 void AIS::get_string(char* str, unsigned start, unsigned cnt)
 {
 	const unsigned charlen = 6; // Number of bits per char
-	for (unsigned i = 0; i < cnt; i++) {
-		str[i] = get_u8(start, charlen);
+	unsigned i;
+	for (i = 0; i < cnt; i++) {
+		uint8_t sixBitChar = get_u8(start, charlen);
+		if (sixBitChar == '\0') {
+			break;
+		}
+		if (sixBitChar < ' ') {
+			str[i] = '@' + sixBitChar;
+		} else {
+			str[i] = sixBitChar;
+		}
 		start += charlen;
 	}
-	str[cnt] = '\0';
+	str[i] = '\0';
 }
 
 
