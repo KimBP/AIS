@@ -17,6 +17,7 @@ public:
 		AIS_MSG_4_BASE_STATION_REPORT,
 		AIS_MSG_5_STATIC_AND_VOYAGE,
 		AIS_MSG_18_CS_POS_REPORT_CLASS_B,
+                AIS_MSG_19_CS_POS_REPORT_EXT_CLASS_B,
 		AIS_MSG_24_STATIC_DATA_REPORT,
 
 		AIS_MSG_MAX,
@@ -149,6 +150,7 @@ private:
 	static const struct AisParamPosPair AisMsgBaseStationReport[];
 	static const struct AisParamPosPair AisMsgStaticAndVoyage[];
 	static const struct AisParamPosPair AisMsgCsPosReportClassB[];
+        static const struct AisParamPosPair AisMsgCsPosReportExtClassB[];
 	static const struct AisParamPosPair AisMsgStaticDataRaport[];
 
 private:
