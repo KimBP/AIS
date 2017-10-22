@@ -64,6 +64,7 @@ const struct AIS::AisTypeMsgPair AIS::AisMsgTypes[] = {
 		{ AIS_MSG_4_BASE_STATION_REPORT,    4 },
 		{ AIS_MSG_5_STATIC_AND_VOYAGE,      5 },
 		{ AIS_MSG_18_CS_POS_REPORT_CLASS_B, 18 },
+                { AIS_MSG_19_CS_POS_REPORT_EXT_CLASS_B, 19 },
 		{ AIS_MSG_24_STATIC_DATA_REPORT,    24 },
 		{ AIS_MSG_MAX, 0 } // Must be last
 };
@@ -126,6 +127,22 @@ const struct AIS::AisParamPosPair AIS::AisMsgCsPosReportClassB[] = {
 		{ AIS_PARAM_B_RAIM,          147 },
 		{AIS_PARAM_U32_RADIO,        148 },
 		{ AIS_PARAM_MAX, 0 } // Must be last
+};
+const struct AIS::AisParamPosPair AIS::AisMsgCsPosReportExtClassB[] = {
+                { AIS_PARAM_U16_SOG,          46 },
+                { AIS_PARAM_B_ACCURACY,       56 },
+                { AIS_PARAM_I32_LONG,         57 },
+                { AIS_PARAM_I32_LAT,          85 },
+                { AIS_PARAM_U16_COG,         112 },
+                { AIS_PARAM_U16_HEADING,     124 },
+                { AIS_PARAM_U8_SECOND,       133 },
+                { AIS_PARAM_T_SHIPNAME,      143 },
+                { AIS_PARAM_E_SHIPTYPE,      263 },
+                { AIS_PARAM_U16_TO_BOW,      271 },
+                { AIS_PARAM_U16_TO_STERN,    280 },
+                { AIS_PARAM_U8_TO_PORT,      289 },
+                { AIS_PARAM_U8_TO_STARBOARD, 295 },
+                { AIS_PARAM_MAX, 0 } // Must be last
 };
 
 const struct AIS::AisParamPosPair AIS::AisMsgStaticDataRaport[] = {
@@ -288,6 +305,7 @@ bool AIS::getdata(unsigned int begin, unsigned int cnt, uint8_t *data, bool isSi
 
 bool AIS::getParamStart(enum AIS::Nmea0183AisParams param, unsigned& start)
 {
+    if(msgType==AIS_MSG_MAX)return false;
 	const struct AisParamPosPair* pparam = AisMsgParams[msgType];
 
 	while (pparam->param != AIS_PARAM_MAX) {
