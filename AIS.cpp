@@ -166,6 +166,7 @@ const struct AIS::AisParamPosPair* AIS::AisMsgParams[AIS_MSG_MAX] = {
 		&AisMsgBaseStationReport[0],
 		&AisMsgStaticAndVoyage[0],
 		&AisMsgCsPosReportClassB[0],
+		&AisMsgCsPosReportExtClassB[0],
 		&AisMsgStaticDataRaport[0]
 };
 
