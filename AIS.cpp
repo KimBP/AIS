@@ -136,12 +136,17 @@ const struct AIS::AisParamPosPair AIS::AisMsgCsPosReportExtClassB[] = {
                 { AIS_PARAM_U16_COG,         112 },
                 { AIS_PARAM_U16_HEADING,     124 },
                 { AIS_PARAM_U8_SECOND,       133 },
+//              { regional,                  139 }, // Not implemented
                 { AIS_PARAM_T_SHIPNAME,      143 },
                 { AIS_PARAM_E_SHIPTYPE,      263 },
                 { AIS_PARAM_U16_TO_BOW,      271 },
                 { AIS_PARAM_U16_TO_STERN,    280 },
                 { AIS_PARAM_U8_TO_PORT,      289 },
                 { AIS_PARAM_U8_TO_STARBOARD, 295 },
+                { AIS_PARAM_E_EPFD,          301 },
+                { AIS_PARAM_B_RAIM,          305 },
+                { AIS_PARAM_B_DTE,           306 },
+                { AIS_PARAM_B_ASSIGNED,      307 },
                 { AIS_PARAM_MAX, 0 } // Must be last
 };
 
@@ -166,6 +171,7 @@ const struct AIS::AisParamPosPair* AIS::AisMsgParams[AIS_MSG_MAX] = {
 		&AisMsgBaseStationReport[0],
 		&AisMsgStaticAndVoyage[0],
 		&AisMsgCsPosReportClassB[0],
+		&AisMsgCsPosReportExtClassB[0],
 		&AisMsgStaticDataRaport[0]
 };
 
