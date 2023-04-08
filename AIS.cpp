@@ -78,17 +78,25 @@ const uint16_t AIS::AisParamLength[] = {
 		4,   // AIS_PARAM_U8_MODEL,
 		20,  // AIS_PARAM_U32_SERIAL,
 		30,  // AIS_PARAM_U32_MOTHERSHIP_MMSI,
+		5,   // AIS_PARAM_E_ATONTYPE
+		120, // AIS_PARAM_T_ATONNAME
+		1,   // AIS_PARAM_B_ATON_OFF_POS
+		8,   // AIS_PARAM_U8_ATONSTATUS
+		1,   // AIS_PARAM_B_ATONVIRTUAL
+		1,   // AIS_PARAM_B_ATONMODE
+		1,   // AIS_PARAM_B_ATONSPARE
 };
 
 const struct AIS::AisTypeMsgPair AIS::AisMsgTypes[] = {
-		{ AIS_MSG_1_2_3_POS_REPORT_CLASS_A, 1 },
-		{ AIS_MSG_1_2_3_POS_REPORT_CLASS_A, 2 },
-		{ AIS_MSG_1_2_3_POS_REPORT_CLASS_A, 3 },
-		{ AIS_MSG_4_BASE_STATION_REPORT,    4 },
-		{ AIS_MSG_5_STATIC_AND_VOYAGE,      5 },
-		{ AIS_MSG_18_CS_POS_REPORT_CLASS_B, 18 },
-                { AIS_MSG_19_CS_POS_REPORT_EXT_CLASS_B, 19 },
-		{ AIS_MSG_24_STATIC_DATA_REPORT,    24 },
+		{ AIS_MSG_1_2_3_POS_REPORT_CLASS_A,      1 },
+		{ AIS_MSG_1_2_3_POS_REPORT_CLASS_A,      2 },
+		{ AIS_MSG_1_2_3_POS_REPORT_CLASS_A,      3 },
+		{ AIS_MSG_4_BASE_STATION_REPORT,         4 },
+		{ AIS_MSG_5_STATIC_AND_VOYAGE,           5 },
+		{ AIS_MSG_18_CS_POS_REPORT_CLASS_B,     18 },
+		{ AIS_MSG_19_CS_POS_REPORT_EXT_CLASS_B, 19 },
+		{ AIS_MSG_21_ATON_REPORT,               21 },
+		{ AIS_MSG_24_STATIC_DATA_REPORT,        24 },
 		{ AIS_MSG_MAX, 0 } // Must be last
 };
 
@@ -189,13 +197,37 @@ const struct AIS::AisParamPosPair AIS::AisMsgStaticDataRaport[] = {
 		{ AIS_PARAM_MAX, 0 } // Must be last
 };
 
+const struct AIS::AisParamPosPair AIS::AisMsgAidToNavigationReport[] = {
+		{ AIS_PARAM_E_ATONTYPE,       38 },
+		{ AIS_PARAM_T_ATONNAME,       43 },
+		{ AIS_PARAM_B_ACCURACY,      163 },
+		{ AIS_PARAM_I32_LONG,        164 },
+		{ AIS_PARAM_I32_LAT,         192 },
+		{ AIS_PARAM_U16_TO_BOW,      219 },
+		{ AIS_PARAM_U16_TO_STERN,    228 },
+		{ AIS_PARAM_U8_TO_PORT,      237 },
+		{ AIS_PARAM_U8_TO_STARBOARD, 243 },
+		{ AIS_PARAM_E_EPFD,          249 },
+		{ AIS_PARAM_U8_SECOND,       253 },
+		{ AIS_PARAM_B_ATON_OFF_POS,  259 },
+		{ AIS_PARAM_U8_ATONSTATUS,   260 },
+		{ AIS_PARAM_B_RAIM,          268 },
+		{ AIS_PARAM_B_ATONVIRTUAL,   269 },
+		{ AIS_PARAM_B_ATONMODE,      270 },
+		{ AIS_PARAM_B_ATONSPARE,     271 },
+		//AIS_ATON_NAME_EXT not implemented
+		{ AIS_PARAM_MAX, 0 } // Must be last
+};
+
 const struct AIS::AisParamPosPair* AIS::AisMsgParams[AIS_MSG_MAX] = {
 		&AisMsgPosReportClassA[0],
 		&AisMsgBaseStationReport[0],
 		&AisMsgStaticAndVoyage[0],
 		&AisMsgCsPosReportClassB[0],
 		&AisMsgCsPosReportExtClassB[0],
+		&AisMsgAidToNavigationReport[0],
 		&AisMsgStaticDataRaport[0]
+
 };
 
 AIS::AIS(const char *AISbitstream, unsigned int fillBits)

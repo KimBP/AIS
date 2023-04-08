@@ -41,7 +41,8 @@ public:
 		AIS_MSG_4_BASE_STATION_REPORT,
 		AIS_MSG_5_STATIC_AND_VOYAGE,
 		AIS_MSG_18_CS_POS_REPORT_CLASS_B,
-                AIS_MSG_19_CS_POS_REPORT_EXT_CLASS_B,
+		AIS_MSG_19_CS_POS_REPORT_EXT_CLASS_B,
+		AIS_MSG_21_ATON_REPORT,
 		AIS_MSG_24_STATIC_DATA_REPORT,
 
 		AIS_MSG_MAX,
@@ -81,6 +82,8 @@ public:
 	uint8_t get_hour() {return get_u8(AIS_PARAM_U8_HOUR); };
 	uint8_t get_minute() {return get_u8(AIS_PARAM_U8_MINUTE); };
 	uint8_t get_partno() {return get_u8(AIS_PARAM_U8_PARTNO); };
+	uint8_t get_atontype() {return get_u8(AIS_PARAM_E_ATONTYPE); };
+	uint8_t get_atonstatus() {return get_u8(AIS_PARAM_U8_ATONSTATUS); };
 
 	uint16_t get_SOG() {return get_u16(AIS_PARAM_U16_SOG); };
 	uint16_t get_COG() {return get_u16(AIS_PARAM_U16_COG); };
@@ -101,11 +104,16 @@ public:
 	bool get_band_flag() {return get_flag(AIS_PARAM_B_BAND);};
 	bool get_msg22_flag() {return get_flag(AIS_PARAM_B_MSG22);};
 	bool get_assigned_flag() {return get_flag(AIS_PARAM_B_ASSIGNED);};
+	bool get_aton_off_pos_flag() {return get_flag(AIS_PARAM_B_ATON_OFF_POS); };
+	bool get_aton_virtual_flag() {return get_flag(AIS_PARAM_B_ATONVIRTUAL); };
+	bool get_aton_mode_flag() {return get_flag(AIS_PARAM_B_ATONMODE); };
+	
 
 	const char* get_shipname() { return get_string(AIS_PARAM_T_SHIPNAME, shipname);};
 	const char* get_destination() { return get_string(AIS_PARAM_T_DESTINATION, destination);};
 	const char* get_callsign() { return get_string(AIS_PARAM_T_CALLSIGN, callsign);};
 	const char* get_vendorid() { return get_string(AIS_PARAM_T_VENDORID, vendorid);};
+	const char* get_atonname() { return get_string(AIS_PARAM_T_ATONNAME, atonname);};
 
 private:
 	enum Nmea0183AisParams {
@@ -151,6 +159,13 @@ private:
 		AIS_PARAM_U8_MODEL,
 		AIS_PARAM_U32_SERIAL,
 		AIS_PARAM_U32_MOTHERSHIP_MMSI,
+		AIS_PARAM_E_ATONTYPE,
+		AIS_PARAM_T_ATONNAME,
+		AIS_PARAM_B_ATON_OFF_POS,
+		AIS_PARAM_U8_ATONSTATUS,
+		AIS_PARAM_B_ATONVIRTUAL,
+		AIS_PARAM_B_ATONMODE,
+		AIS_PARAM_B_ATONSPARE,
 
 		AIS_PARAM_MAX,
 	};
@@ -174,8 +189,10 @@ private:
 	static const struct AisParamPosPair AisMsgBaseStationReport[];
 	static const struct AisParamPosPair AisMsgStaticAndVoyage[];
 	static const struct AisParamPosPair AisMsgCsPosReportClassB[];
-        static const struct AisParamPosPair AisMsgCsPosReportExtClassB[];
+	static const struct AisParamPosPair AisMsgCsPosReportExtClassB[];
+	static const struct AisParamPosPair AisMsgAidToNavigationReport[];
 	static const struct AisParamPosPair AisMsgStaticDataRaport[];
+
 
 private:
 	void decode(unsigned int fillBits);
@@ -205,6 +222,7 @@ private:
 private:
 	static const uint8_t bits_pr_char = 6;
 	static const uint8_t shipname_strlen = 20; // a bits
+	static const uint8_t atonname_strlen = 20; 
 	static const uint8_t destination_strlen = 20; // a bits
 	static const uint8_t callsign_strlen = 7; // a 6 bits
 	static const uint8_t vendorid_strlen = 3; // a 6 bits
@@ -215,6 +233,7 @@ private:
 	unsigned int msgNumeric;
 	//TODO: Allocates strings based on msgType
 	char shipname[shipname_strlen + 1];
+	char atonname[atonname_strlen + 1];
 	char destination[destination_strlen+1];
 	char callsign[callsign_strlen+1];
 	char vendorid[vendorid_strlen+1];
