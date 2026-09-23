@@ -1,0 +1,22 @@
+{
+  "name": "AIS",
+  "description": "AIS library for arduino to decode the content of the AIVDM messages",
+  "keywords": "ais",
+  "version": "0.1.0",
+  "exclude": [
+    "Examples/linux/*"
+  ],
+  "build_src_filter": [
+    "+<AIS.*>",
+    "-<Examples/**/*>"
+  ],
+  "examples": [
+    {
+      "name": "AISDecode",
+      "base": "Examples/AISDecode",
+      "files": [
+        "AISDecode.ino"
+      ]
+    }
+  ]
+}
