@@ -51,7 +51,6 @@ public:
 
 public:
 	AIS(const char *AISbitstream, unsigned int fillBits = 0);
-	static const int msg_max = 72;
 	bool getdata(unsigned int begin, unsigned int cnt, uint8_t *data, bool isigned = false);
 
 	// Fixed position parameters
@@ -232,7 +231,8 @@ private:
 	static const uint8_t callsign_strlen = 7; // a 6 bits
 	static const uint8_t vendorid_strlen = 3; // a 6 bits
 
-	uint8_t msg[msg_max];
+	static const uint8_t max_msg_len = (424 + 7) / 8; // round up to byte the max. supported msg bit count
+  	uint8_t msg[max_msg_len]; // large enough to store all msg bits as 8b bytes
 	unsigned int msgLen{0};
 	Nmea0183AisMessages msgType{AIS_MSG_MAX};
 	unsigned int msgNumeric{0};
