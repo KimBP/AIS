@@ -248,64 +248,25 @@ const struct AIS::AisParamPosPair* AIS::AisMsgParams[AIS_MSG_MAX] = {
 AIS::AIS(const char *AISbitstream, unsigned int fillBits)
 : msgLen(0)
 {
-	uint8_t* tmp = (uint8_t*)AISbitstream;
-	int i = 0;
-	while (*tmp != '\0') {
-		msg[i] = *tmp;
-		i++;
-		if (i == msg_max) {
-			return;
-		}
-		tmp++;
-	}
-
-	msg[i] = *tmp; // Terminate msg
-
-	// Time to decode the AIS data
-	decode(fillBits);
-	uint8_t msgNum;
-	getdata(0,6, &msgNum);  // Will be used a lot
-
-	msgType = numericToMessage(msgNum);
-	msgNumeric = msgNum;
-}
-
-
-
-
-/*
- * Decode msg into it self. 4 bytes becomes 3, i.e. it is OK to do it
- * cnt    byte
- *  0   --qqqqqq
- *  1   --yyyyyy
- *  2   --zzzzzz
- *  3   --wwwwww
- *
- * becomes | qq qq qq yy | yy yy zz zz | zz ww ww ww |
- */
-void AIS::decode(unsigned int fillBits)
-{
-	unsigned int srcIdx=0;
-
-	/* First convert to binary */
-	while (msg[srcIdx] != '\0') {
-		msg[srcIdx] -= '0';
-		if (msg[srcIdx] > 40) {
-			msg[srcIdx] -= 8;
-		}
-		srcIdx++;
-	}
-	msgLen = srcIdx; /* For now in bytes - later in bits */
-
-	/* Now compress resulting 6bits values */
-	unsigned int dstIdx=0;
-	unsigned int cnt=0;
+  /*
+  * Convert ASCII AISbitstream bytes to 6b binary then compress to 
+  * 8 bits into msg buffer (4 bytes becomes 3)
+  * cnt    6bbyte
+  *  0   --qqqqqq
+  *  1   --yyyyyy
+  *  2   --zzzzzz
+  *  3   --wwwwww
+  * becomes 8b bytes: qq qq qq yy | yy yy zz zz | zz ww ww ww |
+  */
+	unsigned int srcIdx = 0;
+	unsigned int dstIdx = 0;
 	uint8_t src;
 
-	srcIdx = 0;
-	while (srcIdx != msgLen) {
-		src = msg[srcIdx];
-		switch (cnt) {
+	// will truncate msgs too long for buffer
+  while (AISbitstream[srcIdx] != '\0' && dstIdx < max_msg_len) {
+		src = AISbitstream[srcIdx] - '0'; // convert to 6b binary
+    if (src > 40) src -= 8; 
+		switch (srcIdx & 0x03) {
 		case 0:
 			msg[dstIdx] = (src << 2);
 			break;
@@ -325,13 +286,14 @@ void AIS::decode(unsigned int fillBits)
 			break;
 		}
 		srcIdx++;
-		cnt++;
-		if (cnt==4) {
-			cnt = 0;
-		}
 	}
 	/* Store msgLen as bit count */
-	msgLen = srcIdx*6 - fillBits;
+	msgLen = (srcIdx * 6) - fillBits;
+	uint8_t msgNum;
+	getdata(0,6, &msgNum);  // Will be used a lot
+
+	msgType = numericToMessage(msgNum);
+	msgNumeric = msgNum;
 }
 
 int AIS::getbit(unsigned int idx)
